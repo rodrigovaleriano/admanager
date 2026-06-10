@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAM Geo Script Generator</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body style="margin:0">
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback, useRef } = React;
+
+
+// ── Gera o script JS completo do GAM com as cidades fornecidas ──
+function generateScript(cities) {
+  const list = cities.map(c => `    "${c}"`).join(",\n");
+  return `/**
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║       GAM Geography Auto-Select — ${cities.length} Cidades                    ║
+ * ╠══════════════════════════════════════════════════════════════════╣
+ * ║  1. Abra GAM > Line Item > Targeting > Geography (painel aberto) ║
+ * ║  2. F12 > Console                                                ║
+ * ║  3. Cole este script e pressione Enter                           ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ */
+(async function GAMGeoSelector() {
+
+  const CONFIG = {
+    searchDelay: 2000,  // ms aguardar resultados após digitar
+    resultDelay: 800,   // ms aguardar ANTES de clicar (botões renderizarem)
+    clickDelay:  500,   // ms aguardar após clicar antes da próxima cidade
+    dryRun:      false, // true = simulação sem cliques reais
+  };
+
+  const rawCities = [
+${list}
+  ];
+
+  const cities = rawCities.map(c => c.replace(/-[a-z]{2}$/, "").trim());
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  function setInputValue(el, value) {
+    const nativeSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+    nativeSetter.call(el, value);
+    el.dispatchEvent(new Event("input",  { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    el.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
+  }
+
+  function findSearchInput() {
+    const selectors = [
+      "input[placeholder=\\"Search\\"]",
+      "input[placeholder*=\\"Search\\"]",
+      "[aria-label*=\\"Search\\"] input",
+      "[aria-label*=\\"search\\"] input",
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel);
+      if (el && el.offsetParent !== null) return el;
+    }
+    const all = [...document.querySelectorAll("input[type=\\"text\\"]")].filter(el => el.offsetParent !== null);
+    return all.length > 0 ? all[all.length - 1] : null;
+  }
+
+  function clickIncludeForCity(cityName) {
+    const normalize = s => s.toLowerCase()
+      .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+      .replace(/[^a-z0-9 ]/g, "");
+    const normalCity = normalize(cityName);
+
+    // Estratégia 1: material-button.include-icon com aria-label contendo cidade + BR
+    const btns1 = [...document.querySelectorAll("material-button[class*=\\"include-icon\\"]")];
+    const match1 = btns1.find(btn => {
+      const label = normalize(btn.getAttribute("aria-label") || "");
+      return label.includes(normalCity) && label.includes("br");
+    });
+    if (match1) { match1.click(); return true; }
+
+    // Estratégia 2: material-button aria-label "Include ... BR"
+    const btns2 = [...document.querySelectorAll("material-button[aria-label*=\\"Include\\"][aria-label*=\\", BR\\"]")];
+    const match2 = btns2.find(btn => normalize(btn.getAttribute("aria-label") || "").includes(normalCity));
+    if (match2) { match2.click(); return true; }
+
+    // Estratégia 3: role=button fallback
+    const btns3 = [...document.querySelectorAll("[role=\\"button\\"][aria-label*=\\"Include\\"][aria-label*=\\", BR\\"]")];
+    const match3 = btns3.find(btn => normalize(btn.getAttribute("aria-label") || "").includes(normalCity));
+    if (match3) { match3.click(); return true; }
+
+    return false;
+  }
+
+  console.log("%c🚀 GAM Geo Selector iniciado", "font-size:14px;font-weight:bold;color:#4285f4");
+  console.log(\`📋 Total de cidades: \${cities.length}\`);
+  if (CONFIG.dryRun) console.warn("⚠️  MODO SIMULAÇÃO — nenhum clique será feito");
+
+  const testInput = findSearchInput();
+  if (!testInput) {
+    console.error("❌ Campo de busca NÃO encontrado! Verifique se o painel Geography está aberto.");
+    return;
+  }
+  console.log("✅ Campo de busca encontrado. Iniciando em 2 segundos...");
+  await delay(2000);
+
+  const results = { success: [], failed: [] };
+
+  for (let i = 0; i < cities.length; i++) {
+    const city = cities[i];
+    const tag = \`[\${String(i + 1).padStart(3, "0")}/\${cities.length}]\`;
+    try {
+      const searchInput = findSearchInput();
+      if (!searchInput) throw new Error("Campo de busca perdido");
+      setInputValue(searchInput, "");
+      await delay(200);
+      setInputValue(searchInput, city);
+      await delay(CONFIG.searchDelay);
+      await delay(CONFIG.resultDelay);
+      const clicked = CONFIG.dryRun ? true : clickIncludeForCity(city);
+      if (clicked) {
+        results.success.push(city);
+        console.log(\`\${tag} ✅ \${city}\`);
+      } else {
+        results.failed.push(city);
+        console.warn(\`\${tag} ⚠️  Não encontrado: "\${city}"\`);
+      }
+      await delay(CONFIG.clickDelay);
+    } catch (err) {
+      results.failed.push(city);
+      console.error(\`\${tag} ❌ Erro em "\${city}":\`, err.message);
+    }
+  }
+
+  console.log("\\n%c════════ RELATÓRIO FINAL ════════", "font-weight:bold;color:#4285f4");
+  console.log(\`✅ Incluídas com sucesso : \${results.success.length}\`);
+  console.log(\`❌ Não encontradas       : \${results.failed.length}\`);
+  if (results.failed.length > 0) {
+    console.warn("\nCidades para inclusão manual:");
+
+    const customTargetingList = results.failed
+      .map(c => c.toLowerCase().trim())
+      .join(", ");
+
+    console.log("===================================");
+    console.log("COPIAR PARA LOCATION:");
+    console.log(customTargetingList);
+    console.log("===================================");
+
+    try {
+      navigator.clipboard.writeText(customTargetingList);
+      console.log("📋 Lista copiada para a área de transferência.");
+    } catch (e) {
+      console.warn("Não foi possível copiar automaticamente.");
+    }
+  } else {
+    console.log("%c🎉 Todas as cidades foram incluídas!", "color:green;font-weight:bold");
+  }
+  console.log("%c═════════════════════════════════", "font-weight:bold;color:#4285f4");
+
+})();`;
+}
+
+// ── Parseia CSV no formato "cidade-estado" (ex: americana-sp) ──
+function parseCities(raw) {
+  return raw
+    .split(/[\n,;]+/)
+    .map(l => l.trim().toLowerCase())
+    .filter(l => l.length > 0 && /^[a-záéíóúâêîôûãõçàüñ\s]+-[a-z]{2}$/i.test(l.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s-]/gi, "")));
+}
+
+// ── Componente principal ──
+function App() {
+  const [cities, setCities] = useState([]);
+  const [rawText, setRawText] = useState("");
+  const [step, setStep] = useState(1); // 1=upload 2=preview 3=download
+  const [dragging, setDragging] = useState(false);
+  const [parseError, setParseError] = useState("");
+  const [search, setSearch] = useState("");
+  const fileRef = useRef();
+
+  const processText = useCallback((text) => {
+    const parsed = parseCities(text);
+    if (parsed.length === 0) {
+      setParseError("Nenhuma cidade encontrada. Verifique o formato: cada linha deve ser cidade-estado (ex: americana-sp)");
+      return;
+    }
+    setParseError("");
+    setCities(parsed);
+    setRawText(text);
+    setStep(2);
+  }, []);
+
+  const handleFile = useCallback((file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => processText(e.target.result);
+    reader.readAsText(file);
+  }, [processText]);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  }, [handleFile]);
+
+  const handleDownload = () => {
+    const script = generateScript(cities);
+    const blob = new Blob([script], { type: "text/javascript" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `gam_geo_${cities.length}cidades.js`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setStep(3);
+  };
+
+  const filteredCities = cities.filter(c =>
+    c.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const stateCount = cities.reduce((acc, c) => {
+    const state = c.split("-").pop().toUpperCase();
+    acc[state] = (acc[state] || 0) + 1;
+    return acc;
+  }, {});
+
+  const reset = () => { setCities([]); setRawText(""); setStep(1); setSearch(""); setParseError(""); };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "#0f1117",
+      color: "#e2e8f0",
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
+      padding: "0",
+    }}>
+      {/* Header */}
+      <div style={{
+        borderBottom: "1px solid #1e2433",
+        padding: "18px 32px",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        background: "#0d1018",
+      }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: "linear-gradient(135deg, #3b82f6, #6366f1)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 16,
+        }}>🎯</div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 15, letterSpacing: "-0.3px" }}>GAM Geo Script Generator</div>
+          <div style={{ fontSize: 11, color: "#64748b" }}>CSV → Script para Google Ad Manager</div>
+        </div>
+        {step > 1 && (
+          <button onClick={reset} style={{
+            marginLeft: "auto", background: "transparent",
+            border: "1px solid #2d3748", borderRadius: 6,
+            color: "#94a3b8", fontSize: 12, padding: "5px 12px", cursor: "pointer",
+          }}>↩ Novo arquivo</button>
+        )}
+      </div>
+
+      {/* Steps indicator */}
+      <div style={{ display: "flex", padding: "20px 32px 0", gap: 0 }}>
+        {["Upload CSV", "Revisar cidades", "Baixar script"].map((label, idx) => {
+          const n = idx + 1;
+          const active = step === n;
+          const done = step > n;
+          return (
+            <div key={n} style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{
+                  width: 24, height: 24, borderRadius: "50%",
+                  background: done ? "#22c55e" : active ? "#3b82f6" : "#1e2433",
+                  border: `2px solid ${done ? "#22c55e" : active ? "#3b82f6" : "#2d3748"}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 11, fontWeight: 700,
+                  color: done || active ? "#fff" : "#475569",
+                  transition: "all 0.2s",
+                }}>
+                  {done ? "✓" : n}
+                </div>
+                <span style={{
+                  fontSize: 12,
+                  color: active ? "#e2e8f0" : done ? "#22c55e" : "#475569",
+                  fontWeight: active ? 600 : 400,
+                }}>{label}</span>
+              </div>
+              {idx < 2 && (
+                <div style={{ width: 40, height: 1, background: "#1e2433", margin: "0 8px" }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "28px 32px" }}>
+
+        {/* STEP 1 — Upload */}
+        {step === 1 && (
+          <div>
+            <div
+              onDrop={handleDrop}
+              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onClick={() => fileRef.current.click()}
+              style={{
+                border: `2px dashed ${dragging ? "#3b82f6" : "#2d3748"}`,
+                borderRadius: 12,
+                padding: "52px 32px",
+                textAlign: "center",
+                cursor: "pointer",
+                background: dragging ? "rgba(59,130,246,0.06)" : "#0d1018",
+                transition: "all 0.2s",
+              }}
+            >
+              <div style={{ fontSize: 36, marginBottom: 12 }}>📂</div>
+              <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>
+                Arraste seu CSV ou clique para selecionar
+              </div>
+              <div style={{ fontSize: 13, color: "#64748b" }}>
+                Formato esperado: uma cidade por linha — <code style={{ color: "#94a3b8", background: "#1e2433", padding: "1px 6px", borderRadius: 4 }}>americana-sp</code>
+              </div>
+              <input ref={fileRef} type="file" accept=".csv,.txt" style={{ display: "none" }}
+                onChange={(e) => handleFile(e.target.files[0])} />
+            </div>
+
+            <div style={{ textAlign: "center", margin: "20px 0", color: "#475569", fontSize: 13 }}>ou cole o texto diretamente</div>
+
+            <textarea
+              placeholder={"americana-sp\nbrotas-sp\nnovo hamburgo-rs\n..."}
+              value={rawText}
+              onChange={(e) => setRawText(e.target.value)}
+              style={{
+                width: "100%", height: 160,
+                background: "#0d1018", border: "1px solid #2d3748",
+                borderRadius: 10, color: "#e2e8f0", fontSize: 13,
+                padding: "14px 16px", resize: "vertical",
+                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                boxSizing: "border-box", outline: "none",
+              }}
+            />
+
+            {parseError && (
+              <div style={{
+                marginTop: 10, padding: "10px 14px", borderRadius: 8,
+                background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)",
+                color: "#fca5a5", fontSize: 13,
+              }}>{parseError}</div>
+            )}
+
+            <button
+              onClick={() => rawText.trim() && processText(rawText)}
+              disabled={!rawText.trim()}
+              style={{
+                marginTop: 16, width: "100%", padding: "13px",
+                background: rawText.trim() ? "linear-gradient(135deg, #3b82f6, #6366f1)" : "#1e2433",
+                border: "none", borderRadius: 10,
+                color: rawText.trim() ? "#fff" : "#475569",
+                fontWeight: 600, fontSize: 14, cursor: rawText.trim() ? "pointer" : "not-allowed",
+                transition: "all 0.2s",
+              }}
+            >
+              Processar cidades →
+            </button>
+          </div>
+        )}
+
+        {/* STEP 2 — Preview */}
+        {step === 2 && (
+          <div>
+            {/* Stats */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 24 }}>
+              <div style={{ background: "#0d1018", border: "1px solid #1e2433", borderRadius: 10, padding: "16px 20px" }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#3b82f6" }}>{cities.length}</div>
+                <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>cidades encontradas</div>
+              </div>
+              <div style={{ background: "#0d1018", border: "1px solid #1e2433", borderRadius: 10, padding: "16px 20px" }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#6366f1" }}>{Object.keys(stateCount).length}</div>
+                <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>estados cobertos</div>
+              </div>
+              <div style={{ background: "#0d1018", border: "1px solid #1e2433", borderRadius: 10, padding: "16px 20px" }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", marginBottom: 4 }}>Top estados</div>
+                <div style={{ fontSize: 11, color: "#94a3b8" }}>
+                  {Object.entries(stateCount).sort((a, b) => b[1] - a[1]).slice(0, 3)
+                    .map(([s, n]) => `${s} (${n})`).join(" · ")}
+                </div>
+              </div>
+            </div>
+
+            {/* Search */}
+            <div style={{ position: "relative", marginBottom: 12 }}>
+              <input
+                placeholder="Filtrar cidades..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{
+                  width: "100%", padding: "10px 14px 10px 36px",
+                  background: "#0d1018", border: "1px solid #2d3748",
+                  borderRadius: 8, color: "#e2e8f0", fontSize: 13,
+                  outline: "none", boxSizing: "border-box",
+                }}
+              />
+              <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#475569", fontSize: 14 }}>🔍</span>
+            </div>
+
+            {/* List */}
+            <div style={{
+              background: "#0d1018", border: "1px solid #1e2433",
+              borderRadius: 10, overflow: "hidden", marginBottom: 20,
+            }}>
+              <div style={{
+                display: "grid", gridTemplateColumns: "1fr auto",
+                padding: "10px 16px", borderBottom: "1px solid #1e2433",
+                fontSize: 11, color: "#475569", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em",
+              }}>
+                <span>Cidade</span><span>Estado</span>
+              </div>
+              <div style={{ maxHeight: 320, overflowY: "auto" }}>
+                {filteredCities.map((c, i) => {
+                  const parts = c.split("-");
+                  const state = parts.pop().toUpperCase();
+                  const city = parts.join(" ").replace(/\b\w/g, l => l.toUpperCase());
+                  return (
+                    <div key={i} style={{
+                      display: "grid", gridTemplateColumns: "1fr auto",
+                      padding: "9px 16px",
+                      borderBottom: i < filteredCities.length - 1 ? "1px solid #12161f" : "none",
+                      fontSize: 13,
+                    }}>
+                      <span style={{ color: "#cbd5e1" }}>{city}</span>
+                      <span style={{
+                        color: "#64748b", fontSize: 11, fontWeight: 600,
+                        background: "#1e2433", borderRadius: 4, padding: "2px 7px",
+                      }}>{state}</span>
+                    </div>
+                  );
+                })}
+                {filteredCities.length === 0 && (
+                  <div style={{ padding: "24px", textAlign: "center", color: "#475569", fontSize: 13 }}>
+                    Nenhuma cidade encontrada para "{search}"
+                  </div>
+                )}
+              </div>
+              {search && filteredCities.length !== cities.length && (
+                <div style={{ padding: "8px 16px", borderTop: "1px solid #1e2433", fontSize: 11, color: "#475569" }}>
+                  Mostrando {filteredCities.length} de {cities.length} cidades
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={handleDownload}
+              style={{
+                width: "100%", padding: "14px",
+                background: "linear-gradient(135deg, #3b82f6, #6366f1)",
+                border: "none", borderRadius: 10,
+                color: "#fff", fontWeight: 700, fontSize: 15, cursor: "pointer",
+              }}
+            >
+              ⬇️ Gerar e baixar script .js ({cities.length} cidades)
+            </button>
+          </div>
+        )}
+
+        {/* STEP 3 — Done */}
+        {step === 3 && (
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
+            <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Script gerado!</div>
+            <div style={{ color: "#64748b", fontSize: 14, marginBottom: 32 }}>
+              Arquivo <code style={{ color: "#94a3b8", background: "#1e2433", padding: "2px 8px", borderRadius: 4 }}>gam_geo_{cities.length}cidades.js</code> baixado.
+            </div>
+
+            <div style={{
+              background: "#0d1018", border: "1px solid #1e2433",
+              borderRadius: 12, padding: "24px", textAlign: "left", marginBottom: 28,
+            }}>
+              <div style={{ fontWeight: 600, marginBottom: 14, fontSize: 13, color: "#94a3b8" }}>PRÓXIMOS PASSOS</div>
+              {[
+                ["1", "Abra o GAM > Line Item > Targeting > Geography"],
+                ["2", "Certifique-se que o painel Geography está aberto"],
+                ["3", "Pressione F12 e vá para a aba Console"],
+                ["4", "Abra o arquivo .js baixado, selecione tudo e cole no Console"],
+                ["5", "Pressione Enter e aguarde o script rodar"],
+              ].map(([n, text]) => (
+                <div key={n} style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "flex-start" }}>
+                  <div style={{
+                    minWidth: 22, height: 22, borderRadius: "50%",
+                    background: "#1e2433", display: "flex", alignItems: "center",
+                    justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#6366f1",
+                  }}>{n}</div>
+                  <span style={{ fontSize: 13, color: "#cbd5e1", lineHeight: 1.6 }}>{text}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={handleDownload} style={{
+                flex: 1, padding: "11px",
+                background: "#1e2433", border: "1px solid #2d3748",
+                borderRadius: 8, color: "#94a3b8", fontSize: 13, cursor: "pointer",
+              }}>⬇️ Baixar novamente</button>
+              <button onClick={reset} style={{
+                flex: 1, padding: "11px",
+                background: "linear-gradient(135deg, #3b82f6, #6366f1)",
+                border: "none", borderRadius: 8,
+                color: "#fff", fontWeight: 600, fontSize: 13, cursor: "pointer",
+              }}>+ Novo CSV</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
