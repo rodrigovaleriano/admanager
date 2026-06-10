@@ -139,7 +139,7 @@ ${list}
   console.log(\`✅ Incluídas com sucesso : \${results.success.length}\`);
   console.log(\`❌ Não encontradas       : \${results.failed.length}\`);
   if (results.failed.length > 0) {
-    console.warn("\nCidades para inclusão manual:");
+    console.warn("Cidades para inclusão manual:");
 
     const customTargetingList = results.failed
       .map(c => c.toLowerCase().trim())
