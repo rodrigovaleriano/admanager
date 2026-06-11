@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDi · Positions Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a111e; --s1: #111827; --s2: #1e293b; --s3: #334155;
+  --t1: #f1f5f9; --t2: #e2e8f0; --t3: #94a3b8; --t4: #64748b; --t5: #475569; --t6: #334155;
+  --blue: #3b82f6; --green: #22c55e; --yellow: #f59e0b; --orange: #f97316; --red: #ef4444; --cyan: #60a5fa;
+  --purple: #8b5cf6; --violet: #a78bfa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t2);font-family:'Inter',system-ui,sans-serif;padding:28px 20px;min-height:100vh;font-size:14px;}
+a{color:var(--blue);}
+.hidden{display:none!important;}
+
+/* ── Layout ── */
+#root{max-width:1180px;margin:0 auto;}
+.header-meta{font-size:10px;color:var(--t6);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;}
+.header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap;}
+h1{font-size:24px;font-weight:700;color:var(--t1);}
+h1 .accent{color:var(--blue);}
+.subtitle{font-size:12px;color:var(--t5);margin-top:4px;}
+footer{margin-top:20px;text-align:center;font-size:10px;color:var(--t6);}
+
+/* ── Upload ── */
+.upload-area{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.upload-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--s3);color:var(--t3);font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.upload-btn:hover{background:var(--s3);color:var(--t2);}
+.file-name{font-size:11px;color:var(--green);font-weight:500;}
+.upload-drop{border:2px dashed var(--s3);border-radius:12px;padding:32px;text-align:center;color:var(--t4);font-size:13px;transition:border-color .2s;margin-bottom:22px;}
+.upload-drop.drag-over{border-color:var(--blue);color:var(--blue);}
+.upload-drop-icon{font-size:28px;margin-bottom:8px;}
+
+/* ── Rules banner ── */
+.rules-banner{background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:12px 18px;margin-bottom:18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:space-between;}
+.rules-label{font-size:10px;color:var(--t5);font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.rules-items{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.rule-item{display:flex;align-items:center;gap:6px;}
+.rule-name{font-size:11px;color:var(--t4);}
+.rule-floor{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--bg);color:#fbbf24;border:1px solid #44310030;}
+.legend-btn{font-size:11px;color:var(--t4);background:var(--s2);border:1px solid var(--s3);border-radius:6px;padding:5px 10px;cursor:pointer;}
+.legend-btn:hover{color:var(--t2);}
+
+/* ── Legend ── */
+.legend{background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:18px 20px;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+@media(max-width:800px){.legend{grid-template-columns:1fr;}}
+.legend-col-title{font-size:10px;font-weight:700;color:var(--t5);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.legend-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
+.legend-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px;flex-shrink:0;}
+.legend-text{font-size:11px;color:var(--t4);line-height:1.5;}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:4px;margin-bottom:14px;}
+.tab-btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;background:var(--s1);color:var(--t4);}
+.tab-btn.active{background:var(--blue);color:#fff;}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
+@media(max-width:700px){.kpis{grid-template-columns:repeat(3,1fr);}}
+.kpi{background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:14px 16px;}
+.kpi-label{font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;}
+.kpi-value{font-size:20px;font-weight:700;}
+.kpi-sub{font-size:9px;color:var(--t6);margin-top:2px;}
+
+/* ── Table ── */
+.table-wrap{background:var(--s1);border:1px solid var(--s2);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:1000px;}
+thead tr{background:var(--bg);}
+th{padding:10px 14px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.9px;font-weight:700;white-space:nowrap;border-bottom:1px solid var(--s2);}
+tbody tr{border-bottom:1px solid var(--bg);}
+tbody tr:nth-child(even){background:#ffffff03;}
+tbody tr:hover{background:#ffffff07;}
+td{padding:11px 14px;vertical-align:middle;}
+.td-pos{font-weight:600;color:var(--t2);font-size:13px;text-transform:capitalize;}
+.td-dev{color:var(--t4);font-size:11px;}
+.td-num{font-size:13px;color:var(--t3);}
+.td-ecpm{font-size:13px;font-weight:600;color:var(--t2);}
+.td-floor{font-size:12px;color:var(--t5);}
+.td-rev{font-size:13px;font-weight:600;color:var(--green);}
+.td-rpm{font-size:13px;font-weight:700;}
+.metric-cell{min-width:150px;}
+.metric-row{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.metric-val{font-size:13px;font-weight:500;color:var(--t2);}
+.mini-bar-bg{background:var(--bg);border-radius:3px;height:4px;width:100%;margin-top:0;}
+.mini-bar-fill{height:100%;border-radius:3px;transition:width .4s;}
+
+/* ── Badges ── */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.3px;cursor:default;white-space:nowrap;}
+.floor-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;}
+
+/* ── Section ── */
+.section-title{font-size:11px;font-weight:700;color:var(--t5);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+
+/* ── Alerts ── */
+#alerts-section{margin-bottom:24px;}
+.alert{border-radius:8px;padding:12px 16px;margin-bottom:8px;border-left:3px solid;}
+.alert-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.alert-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+.alert-title{font-size:12px;font-weight:600;color:var(--t2);}
+.alert-desc{font-size:11.5px;color:var(--t3);line-height:1.65;}
+
+/* ── Floor table ── */
+.card{background:var(--s1);border:1px solid var(--s2);border-radius:12px;padding:18px;}
+.floor-tbl{width:100%;border-collapse:collapse;}
+.floor-tbl th{padding:7px 12px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--s2);}
+.floor-tbl td{padding:9px 12px;border-bottom:1px solid var(--bg);font-size:12px;}
+.floor-tbl tr:last-child td{border-bottom:none;}
+.pri-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+
+/* ── Tooltip ── */
+#gl-tip{position:absolute;background:#0a111e;border:1px solid var(--s3);border-radius:6px;padding:8px 11px;font-size:11px;color:var(--t3);max-width:240px;line-height:1.55;z-index:9999;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 16px #00000066;}
+</style>
+</head>
+<body>
+<div id="root">
+
+  <!-- Header -->
+  <div class="header-meta" id="report-meta">IDi · Indirect · Jun 1–11, 2026</div>
+  <div class="header-row">
+    <div>
+      <h1>Performance por <span class="accent">idi_pos</span></h1>
+      <p class="subtitle">Match rate · Fill rate · RPM · Active View · vs Pricing Rules</p>
+    </div>
+    <div class="upload-area">
+      <label for="file-input" class="upload-btn">📂 Importar CSV / XLSX</label>
+      <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display:none">
+      <span id="file-name" class="file-name"></span>
+    </div>
+  </div>
+
+  <!-- Drop zone -->
+  <div id="drop-zone" class="upload-drop">
+    <div class="upload-drop-icon">📊</div>
+    Arraste um arquivo <strong>.csv</strong> ou <strong>.xlsx</strong> exportado do GAM, ou use o botão acima.<br>
+    <small style="color:var(--t6);margin-top:6px;display:block;">Mostrando dados de exemplo até um arquivo ser importado.</small>
+  </div>
+
+  <!-- Pricing Rules Banner -->
+  <div class="rules-banner">
+    <span class="rules-label">Floors ativos</span>
+    <div class="rules-items">
+      <div class="rule-item"><span class="rule-name">Msite · high</span><span class="rule-floor">R$2,80</span></div>
+      <div class="rule-item"><span class="rule-name">Msite · premium</span><span class="rule-floor">R$3,00</span></div>
+      <div class="rule-item"><span class="rule-name">Msite · standard</span><span class="rule-floor">R$2,40</span></div>
+      <div class="rule-item"><span class="rule-name">Desktop · geral</span><span class="rule-floor">R$2,50</span></div>
+    </div>
+    <button class="legend-btn" id="legend-toggle">Ver legenda de status</button>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend hidden" id="legend">
+    <div>
+      <div class="legend-col-title">Match Rate</div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Saudável (≥35%)</span>
+        <span class="legend-text">AdX competindo bem. Lances chegando com frequência no leilão.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Regular (20–35%)</span>
+        <span class="legend-text">Match moderado. Monitorar tendência; pode melhorar com ajuste de floor ou targeting.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Demanda fraca</span>
+        <span class="legend-text">(&lt;20% + eCPM &gt;&gt; floor) — Floor não é o problema. Buyers simplesmente não chegam ao leilão.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Floor alto</span>
+        <span class="legend-text">(&lt;20% + eCPM ≈ floor) — Floor bloqueando lances. Reduzir o piso para recuperar volume.</span>
+      </div>
+    </div>
+    <div>
+      <div class="legend-col-title">Fill Rate</div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Saudável (≥30%)</span>
+        <span class="legend-text">Alto aproveitamento: AdX ganhando a maioria das requisições em que recebeu lance.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#60a5fa1a;color:#60a5fa;border:1px solid #60a5fa40">🔵 Perde p/ demand</span>
+        <span class="legend-text">(gap match-fill &gt; 15pp) — AdX está bidando mas Direct/HB estão ganhando o leilão.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Regular (15–30%)</span>
+        <span class="legend-text">Fill moderado. Avaliar competitividade do AdX em relação às outras fontes de demanda.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Baixo (&lt;15%)</span>
+        <span class="legend-text">Fill crítico. Revisar floor, passback e cadeia de demanda.</span>
+      </div>
+    </div>
+    <div>
+      <div class="legend-col-title">Active View</div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Premium (≥70%)</span>
+        <span class="legend-text">Viewability excelente. Inventário altamente valorizado por buyers premium e DSPs com filtros de viewability.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Boa (50–70%)</span>
+        <span class="legend-text">Viewability adequada. Compatível com a maioria dos critérios de compra programática.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Regular (30–50%)</span>
+        <span class="legend-text">Abaixo da média de mercado (~50%). Pode impactar CPMs e afastar demanda qualificada.</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Baixa (&lt;30%)</span>
+        <span class="legend-text">Viewability crítica. Buyers premium tendem a evitar este inventário. Revisar posicionamento.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="all">Todos</button>
+    <button class="tab-btn" data-tab="msite">Msite</button>
+    <button class="tab-btn" data-tab="desktop">Desktop</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- Table -->
+  <div class="table-wrap"><div class="table-scroll"><table id="main-table">
+    <thead><tr>
+      <th>Posição</th><th>Device</th>
+      <th>Match Rate</th><th>Fill Rate</th>
+      <th>RPM</th><th>Impressões</th>
+      <th>Active View</th><th>eCPM</th>
+      <th>Floor</th><th>vs Floor</th><th>Receita</th>
+    </tr></thead>
+    <tbody id="table-body"></tbody>
+  </table></div></div>
+
+  <!-- Alerts -->
+  <div id="alerts-section">
+    <div class="section-title">Diagnóstico & Recomendações</div>
+    <div id="alerts-list"></div>
+  </div>
+
+  <!-- Floor suggestions -->
+  <div class="card">
+    <div class="section-title">Proposta de Ajuste de Floors</div>
+    <div class="table-scroll"><table class="floor-tbl" id="floor-table">
+      <thead><tr>
+        <th>Regra</th><th>Floor Atual</th><th>Sugerido</th><th>Justificativa</th><th>Prioridade</th>
+      </tr></thead>
+      <tbody id="floor-body"></tbody>
+    </table></div>
+  </div>
+
+  <footer>IDi · Indirect · <span id="footer-date">Jun 1–11, 2026</span> · Dados: Ad Exchange GAM</footer>
+</div>
+
+<!-- Global Tooltip -->
+<div id="gl-tip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG — edit floors here if rules change
+// ─────────────────────────────────────────────────────────────────────────────
+const FLOORS = {
+  msite:   { high: 2.80, premium: 3.00, standard: 2.40 },  // Smartphone + Tablet
+  desktop: 2.50                                              // Desktop (all positions)
+};
+
+function getFloor(device, pos) {
+  if (device === 'Smartphone' || device === 'Tablet') return FLOORS.msite[pos] ?? null;
+  if (device === 'Desktop')                           return FLOORS.desktop;
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DEFAULT DATA (pre-loaded, overridden by file upload)
+// ─────────────────────────────────────────────────────────────────────────────
+const DEFAULT_DATA = [
+  { pos:'premium',  device:'Smartphone', imp:11739, req:56588, rev:90.73, match:43.4, fill:20.7, ecpm:7.73, av:52.7, rpm:1.60, floor:3.00 },
+  { pos:'high',     device:'Smartphone', imp:12185, req:61353, rev:76.87, match:38.3, fill:19.9, ecpm:6.31, av:44.0, rpm:1.25, floor:2.80 },
+  { pos:'standard', device:'Smartphone', imp:6595,  req:56522, rev:31.37, match:34.3, fill:11.7, ecpm:4.76, av:46.3, rpm:0.56, floor:2.40 },
+  { pos:'premium',  device:'Tablet',     imp:94,    req:878,   rev:0.48,  match:17.3, fill:10.7, ecpm:5.11, av:46.7, rpm:0.55, floor:3.00 },
+  { pos:'high',     device:'Tablet',     imp:82,    req:962,   rev:0.24,  match:13.1, fill:8.5,  ecpm:2.93, av:29.3, rpm:0.25, floor:2.80 },
+  { pos:'standard', device:'Tablet',     imp:34,    req:892,   rev:0.06,  match:8.9,  fill:3.8,  ecpm:1.76, av:36.5, rpm:0.07, floor:2.40 },
+  { pos:'sidebar',  device:'Desktop',    imp:9469,  req:23941, rev:63.97, match:40.4, fill:39.6, ecpm:6.76, av:95.5, rpm:2.67, floor:2.50 },
+  { pos:'premium',  device:'Desktop',    imp:12011, req:34526, rev:48.09, match:40.3, fill:34.8, ecpm:4.00, av:44.4, rpm:1.39, floor:2.50 },
+  { pos:'high',     device:'Desktop',    imp:14739, req:42624, rev:46.33, match:35.4, fill:34.6, ecpm:3.14, av:40.4, rpm:1.09, floor:2.50 },
+  { pos:'standard', device:'Desktop',    imp:6976,  req:37586, rev:22.91, match:26.9, fill:18.6, ecpm:3.28, av:47.5, rpm:0.61, floor:2.50 },
+  { pos:'anchor',   device:'Desktop',    imp:14,    req:85,    rev:0.07,  match:41.6, fill:16.5, ecpm:5.00, av:92.9, rpm:0.82, floor:2.50 },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let allData     = DEFAULT_DATA;
+let currentTab  = 'all';
+let showLegend  = false;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATUS HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function matchStatus(match, ecpm, floor) {
+  const ratio = floor > 0 ? ecpm / floor : 99;
+  if (match >= 35) return { label:'Saudável',      c:'#22c55e',
+    tip:'🟢 Saudável (≥35%) — AdX competindo bem. Lances chegando com frequência no leilão.' };
+  if (match >= 20) return { label:'Regular',        c:'#f59e0b',
+    tip:'🟡 Regular (20–35%) — Match moderado. Monitorar tendência; pode melhorar com ajuste de floor ou targeting.' };
+  if (ratio >= 1.5) return { label:'Demanda fraca', c:'#f97316',
+    tip:'🟠 Demanda fraca (<20% + eCPM >> floor) — Floor não é o problema: buyers simplesmente não chegam ao leilão. Investigar supply path, passback e targeting.' };
+  return               { label:'Floor alto',       c:'#ef4444',
+    tip:'🔴 Floor alto (<20% + eCPM ≈ floor) — Floor pode estar bloqueando lances. Considerar reduzir o piso para recuperar volume.' };
+}
+
+function fillStatus(fill, match) {
+  const gap = match - fill;
+  if (fill >= 30) return { label:'Saudável',          c:'#22c55e',
+    tip:'🟢 Saudável (≥30%) — Alto aproveitamento: AdX está ganhando a maioria das requisições em que recebeu um lance.' };
+  if (gap > 15 && fill >= 15) return { label:'Perde p/ demand',  c:'#60a5fa',
+    tip:`🔵 Perde p/ outras demand (gap ${gap.toFixed(1)}pp) — AdX está bidando mas Direct/HB estão ganhando o leilão. Pode ser intencional na hierarquia de demanda.` };
+  if (fill >= 15) return { label:'Regular',             c:'#f59e0b',
+    tip:'🟡 Regular (15–30%) — Fill moderado. Avaliar competitividade do AdX em relação às outras fontes de demanda.' };
+  if (gap > 15)   return { label:'Perde p/ demand',     c:'#60a5fa',
+    tip:`🔵 Perde p/ outras demand (gap ${gap.toFixed(1)}pp) — AdX está bidando mas perdendo muito para Direct/HB.` };
+  return               { label:'Baixo',                c:'#ef4444',
+    tip:'🔴 Baixo (<15%) — Fill crítico. Revisar floor, passback e cadeia de demanda.' };
+}
+
+function avStatus(av) {
+  if (av >= 70) return { label:'Premium',  c:'#22c55e',
+    tip:'🟢 Premium (≥70%) — Viewability excelente. Inventário altamente valorizado por buyers premium e DSPs com filtros de viewability.' };
+  if (av >= 50) return { label:'Boa',      c:'#f59e0b',
+    tip:'🟡 Boa (50–70%) — Viewability adequada. Compatível com a maioria dos critérios de compra programática do mercado.' };
+  if (av >= 30) return { label:'Regular',  c:'#f97316',
+    tip:'🟠 Regular (30–50%) — Abaixo da média de mercado (~50%). Pode impactar CPMs e afastar demanda qualificada.' };
+  return               { label:'Baixa',   c:'#ef4444',
+    tip:'🔴 Baixa (<30%) — Viewability crítica. Buyers premium tendem a evitar este inventário. Revisar posicionamento e lazy loading.' };
+}
+
+function floorStatus(ecpm, floor) {
+  if (!floor) return null;
+  const r = ecpm / floor;
+  if (ecpm < floor) return { label:'⚠ ABAIXO', c:'#ef4444' };
+  if (r < 1.4)      return { label:`${r.toFixed(1)}×`, c:'#f59e0b' };
+  return                   { label:`${r.toFixed(1)}×`, c:'#22c55e' };
+}
+
+function rpmColor(rpm) {
+  if (rpm >= 2.0) return '#22c55e';
+  if (rpm >= 1.0) return '#f59e0b';
+  if (rpm >= 0.5) return '#f97316';
+  return '#ef4444';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BADGE HTML
+// ─────────────────────────────────────────────────────────────────────────────
+function badge(label, color, tip) {
+  const safe = tip ? tip.replace(/"/g,'&quot;') : '';
+  return `<span class="badge" style="background:${color}1a;color:${color};border:1px solid ${color}40"
+    ${safe ? `data-tip="${safe}"` : ''}>${label}</span>`;
+}
+
+function miniBar(value, max, color) {
+  const pct = Math.min(value / max * 100, 100).toFixed(1);
+  return `<div class="mini-bar-bg"><div class="mini-bar-fill" style="width:${pct}%;background:${color}"></div></div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FILTER DATA
+// ─────────────────────────────────────────────────────────────────────────────
+function filtered() {
+  if (currentTab === 'msite')   return allData.filter(r => r.device === 'Smartphone' || r.device === 'Tablet');
+  if (currentTab === 'desktop') return allData.filter(r => r.device === 'Desktop');
+  return allData;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER KPIs
+// ─────────────────────────────────────────────────────────────────────────────
+function renderKPIs() {
+  const rows = filtered();
+  const totalImp = rows.reduce((a,r) => a + r.imp, 0);
+  const totalReq = rows.reduce((a,r) => a + r.req, 0);
+  const totalRev = rows.reduce((a,r) => a + r.rev, 0);
+  const avgMatch = rows.length ? (rows.reduce((a,r) => a + r.match, 0) / rows.length).toFixed(1) : '0';
+  const avgFill  = totalReq > 0 ? (totalImp / totalReq * 100).toFixed(1) : '0';
+  const totalRpm = totalReq > 0 ? (totalRev / totalReq * 1000).toFixed(2) : '0';
+  const avgAV    = totalImp > 0 ? (rows.reduce((a,r) => a + r.av * r.imp, 0) / totalImp).toFixed(1) : '0';
+  const kpis = [
+    { label:'Impressões',  value: totalImp.toLocaleString('pt-BR'), color:'var(--blue)', sub:'' },
+    { label:'Match Rate',  value: `${avgMatch}%`,   color:'var(--cyan)',   sub:'média ponderada' },
+    { label:'Fill Rate',   value: `${avgFill}%`,    color:'var(--violet)', sub:'imp / requests' },
+    { label:'RPM',         value: `R$${totalRpm}`,  color:'var(--purple)', sub:'receita / 1k req' },
+    { label:'Receita',     value: `R$${totalRev.toFixed(2)}`, color:'var(--green)', sub:'' },
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k =>
+    `<div class="kpi"><div class="kpi-label">${k.label}</div>
+     <div class="kpi-value" style="color:${k.color}">${k.value}</div>
+     ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}</div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER TABLE
+// ─────────────────────────────────────────────────────────────────────────────
+function renderTable() {
+  const rows = filtered().slice().sort((a,b) => b.rpm - a.rpm);
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = rows.map(r => {
+    const ms  = matchStatus(r.match, r.ecpm, r.floor);
+    const fs  = fillStatus(r.fill, r.match);
+    const avs = avStatus(r.av);
+    const fls = floorStatus(r.ecpm, r.floor);
+    const rc  = rpmColor(r.rpm);
+    return `<tr>
+      <td class="td-pos">${r.pos}</td>
+      <td class="td-dev">${r.device}</td>
+
+      <td class="metric-cell">
+        <div class="metric-row">
+          <span class="metric-val">${r.match.toFixed(1)}%</span>
+          ${badge(ms.label, ms.c, ms.tip)}
+        </div>
+        ${miniBar(r.match, 60, ms.c)}
+      </td>
+
+      <td class="metric-cell">
+        <div class="metric-row">
+          <span class="metric-val">${r.fill.toFixed(1)}%</span>
+          ${badge(fs.label, fs.c, fs.tip)}
+        </div>
+        ${miniBar(r.fill, 60, fs.c)}
+      </td>
+
+      <td>
+        <span class="td-rpm" style="color:${rc}">R$${r.rpm.toFixed(2)}</span>
+        ${miniBar(r.rpm, 3, rc)}
+      </td>
+
+      <td class="td-num">${r.imp.toLocaleString('pt-BR')}</td>
+
+      <td class="metric-cell">
+        <div class="metric-row">
+          <span class="metric-val">${r.av.toFixed(1)}%</span>
+          ${badge(avs.label, avs.c, avs.tip)}
+        </div>
+        ${miniBar(r.av, 100, avs.c)}
+      </td>
+
+      <td class="td-ecpm">R$${r.ecpm.toFixed(2)}</td>
+      <td class="td-floor">${r.floor != null ? 'R$' + r.floor.toFixed(2) : '—'}</td>
+      <td>${fls ? `<span class="floor-badge" style="background:${fls.c}1a;color:${fls.c};border:1px solid ${fls.c}40">${fls.label}</span>` : '—'}</td>
+      <td class="td-rev">R$${r.rev.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GENERATE ALERTS (data-driven)
+// ─────────────────────────────────────────────────────────────────────────────
+function generateAlerts(data) {
+  const alerts = [];
+  const sig = data.filter(r => r.req >= 50);
+
+  // Critical: eCPM below floor
+  sig.filter(r => r.floor && r.ecpm < r.floor).forEach(r => {
+    alerts.push({ type:'critical', icon:'⛔', label:'Crítico',
+      title:`${r.device} | ${r.pos} — eCPM abaixo do floor`,
+      desc:`eCPM de R$${r.ecpm.toFixed(2)} está abaixo do floor de R$${r.floor.toFixed(2)} herdado da regra ${r.device === 'Desktop' ? 'desktop' : 'msite'}. Fill de ${r.fill.toFixed(1)}% e RPM de R$${r.rpm.toFixed(2)}. Criar regra separada com floor menor é a ação mais urgente.`,
+      lc:'#ef4444', bg:'#450a0a22', bc:'#ef4444' });
+  });
+
+  // Warning: large match-fill gap
+  sig.filter(r => r.match - r.fill > 18 && r.fill < 25).forEach(r => {
+    alerts.push({ type:'warning', icon:'⚠️', label:'Atenção',
+      title:`${r.device} | ${r.pos} — gap match vs fill (${(r.match - r.fill).toFixed(1)}pp)`,
+      desc:`Match de ${r.match.toFixed(1)}% mas fill de apenas ${r.fill.toFixed(1)}%: o AdX está recebendo bids mas perdendo para Direct ou HB em ~${(r.match - r.fill).toFixed(1)}pp das requisições. Se for intencional (Direct prioritário), ok. Caso contrário, revisar a hierarquia de demanda.`,
+      lc:'#f59e0b', bg:'#43140722', bc:'#f59e0b' });
+  });
+
+  // Warning: floor close to eCPM (potential suppression)
+  sig.filter(r => r.floor && r.ecpm >= r.floor && r.ecpm / r.floor < 1.4 && r.fill < 30).forEach(r => {
+    alerts.push({ type:'warning', icon:'⚠️', label:'Atenção',
+      title:`${r.device} | ${r.pos} — floor pode suprimir demanda`,
+      desc:`eCPM (R$${r.ecpm.toFixed(2)}) apenas ${(r.ecpm/r.floor).toFixed(1)}× acima do floor R$${r.floor.toFixed(2)}. Fill de ${r.fill.toFixed(1)}% e RPM de R$${r.rpm.toFixed(2)}. Testar floor menor pode melhorar o RPM sem comprometer eCPM.`,
+      lc:'#f59e0b', bg:'#43140722', bc:'#f59e0b' });
+  });
+
+  // Positive: high headroom, floor can be raised
+  sig.filter(r => r.floor && r.ecpm / r.floor > 2.0 && r.fill > 8).forEach(r => {
+    alerts.push({ type:'positive', icon:'✅', label:'Oportunidade',
+      title:`${r.device} | ${r.pos} — headroom para elevar floor`,
+      desc:`eCPM de R$${r.ecpm.toFixed(2)} é ${(r.ecpm/r.floor).toFixed(1)}× o floor atual de R$${r.floor.toFixed(2)}. Há espaço para testar floor em R$${(r.floor * 1.4).toFixed(2)} sem impacto relevante no fill.`,
+      lc:'#22c55e', bg:'#052e1622', bc:'#22c55e' });
+  });
+
+  // Info: low match rate, demand issue
+  sig.filter(r => r.floor && r.match < 20 && r.ecpm / r.floor >= 1.5 && r.fill < 20).forEach(r => {
+    alerts.push({ type:'info', icon:'ℹ️', label:'Observação',
+      title:`${r.device} | ${r.pos} — match baixo por demanda, não por floor`,
+      desc:`Match de ${r.match.toFixed(1)}% com eCPM ${(r.ecpm/r.floor).toFixed(1)}× o floor: o piso não é o gargalo. Buyers simplesmente não estão mandando bids para essa posição. Investigar passback, ad unit mapping e se a posição está no viewport.`,
+      lc:'#60a5fa', bg:'#0c1a2e', bc:'#3b82f6' });
+  });
+
+  return alerts.slice(0, 6);
+}
+
+function renderAlerts() {
+  const alerts = generateAlerts(allData);
+  document.getElementById('alerts-list').innerHTML = alerts.map(a =>
+    `<div class="alert" style="background:${a.bg};border-color:${a.bc}">
+      <div class="alert-head">
+        <span>${a.icon}</span>
+        <span class="alert-type" style="color:${a.lc}">${a.label}</span>
+        <span class="alert-title">${a.title}</span>
+      </div>
+      <div class="alert-desc">${a.desc}</div>
+    </div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GENERATE FLOOR SUGGESTIONS (data-driven)
+// ─────────────────────────────────────────────────────────────────────────────
+function generateFloorSuggestions(data) {
+  const suggs = [];
+  const sig = data.filter(r => r.req >= 50 && r.floor != null);
+
+  sig.forEach(r => {
+    const ratio = r.ecpm / r.floor;
+    const deviceLabel = r.device === 'Desktop' ? 'Desktop' : 'Msite';
+    if (r.ecpm < r.floor) {
+      suggs.push({ rule:`${deviceLabel} | ${r.pos}`, cur:`R$${r.floor.toFixed(2)}`,
+        sug:`R$${(r.ecpm * 0.8).toFixed(2)}`,
+        reason:`eCPM real (R$${r.ecpm.toFixed(2)}) abaixo do floor — bloqueia demanda`,
+        pri:'Alta', pc:'#ef4444' });
+    } else if (ratio > 2.2 && r.fill > 8) {
+      suggs.push({ rule:`${deviceLabel} | ${r.pos}`, cur:`R$${r.floor.toFixed(2)}`,
+        sug:`R$${(r.floor * 1.4).toFixed(2)}`,
+        reason:`eCPM ${ratio.toFixed(1)}× o floor — headroom para proteger inventário`,
+        pri:'Média', pc:'#f59e0b' });
+    } else if (ratio < 1.35 && r.ecpm >= r.floor && r.fill < 30) {
+      suggs.push({ rule:`${deviceLabel} | ${r.pos}`, cur:`R$${r.floor.toFixed(2)}`,
+        sug:`R$${(r.floor * 0.8).toFixed(2)} (teste)`,
+        reason:`eCPM próximo ao floor — testar se RPM melhora com mais volume`,
+        pri:'Baixa', pc:'#22c55e' });
+    }
+  });
+
+  // Special: sidebar desktop with general floor
+  const sidebar = data.find(r => r.device === 'Desktop' && r.pos === 'sidebar');
+  if (sidebar && sidebar.av > 80 && sidebar.ecpm > 4) {
+    const exists = suggs.find(s => s.rule === 'Desktop | sidebar');
+    if (!exists) suggs.push({ rule:'Desktop | sidebar', cur:'R$2,50 (geral)',
+      sug:`R$${(sidebar.ecpm * 0.6).toFixed(2)} (dedicada)`,
+      reason:`AV ${sidebar.av.toFixed(0)}% + eCPM R$${sidebar.ecpm.toFixed(2)} — merece regra dedicada`,
+      pri:'Média', pc:'#f59e0b' });
+  }
+
+  return suggs.slice(0, 6);
+}
+
+function renderFloorSuggestions() {
+  const suggs = generateFloorSuggestions(allData);
+  document.getElementById('floor-body').innerHTML = suggs.map(s =>
+    `<tr>
+      <td style="color:var(--t2)">${s.rule}</td>
+      <td style="color:var(--t5)">${s.cur}</td>
+      <td style="color:#fbbf24;font-weight:700">${s.sug}</td>
+      <td style="color:var(--t4);font-size:11px">${s.reason}</td>
+      <td><span class="pri-badge" style="background:${s.pc}1a;color:${s.pc}">${s.pri}</span></td>
+    </tr>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FULL RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function render() {
+  renderKPIs();
+  renderTable();
+  renderAlerts();
+  renderFloorSuggestions();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA PROCESSING FROM FILE
+// ─────────────────────────────────────────────────────────────────────────────
+function processRows(rows) {
+  const groups = {};
+  rows.forEach(row => {
+    const device = (row['Device category'] || '').trim();
+    if (!['Smartphone','Tablet','Desktop'].includes(device)) return;
+    const kv = (row['Key-values'] || row['Key values'] || '').trim();
+    const m = kv.match(/idi_pos=(\w+)/);
+    if (!m) return;
+    const pos = m[1];
+    const key = `${device}|${pos}`;
+    if (!groups[key]) groups[key] = { device, pos, rev:0, imp:0, req:0, matchWsum:0, avWsum:0 };
+    const g = groups[key];
+    const rev = parseFloat(row['Ad Exchange revenue']) || 0;
+    const imp = parseInt(row['Ad Exchange impressions']) || 0;
+    const req = parseInt(row['Ad Exchange total requests']) || 0;
+    const mr  = parseFloat(row['Ad Exchange match rate']) || 0;
+    const av  = Math.min(parseFloat(row['Total Active View % viewable impressions']) || 0, 1);
+    g.rev += rev; g.imp += imp; g.req += req;
+    g.matchWsum += mr * req;
+    g.avWsum    += av * imp;
+  });
+
+  return Object.values(groups)
+    .filter(g => g.req > 0)
+    .map(g => {
+      const floor = getFloor(g.device, g.pos);
+      const match = g.req > 0 ? (g.matchWsum / g.req) * 100 : 0;
+      const fill  = g.req > 0 ? (g.imp / g.req) * 100 : 0;
+      const ecpm  = g.imp > 0 ? (g.rev / g.imp) * 1000 : 0;
+      const av    = g.imp > 0 ? (g.avWsum / g.imp) * 100 : 0;
+      const rpm   = g.req > 0 ? (g.rev / g.req) * 1000 : 0;
+      return { device:g.device, pos:g.pos, imp:g.imp, req:g.req, rev:g.rev, match, fill, ecpm, av, rpm, floor };
+    })
+    .sort((a,b) => b.rpm - a.rpm);
+}
+
+function applyData(rows, filename) {
+  allData = processRows(rows);
+  document.getElementById('file-name').textContent = '✓ ' + filename;
+  document.getElementById('drop-zone').classList.add('hidden');
+  render();
+}
+
+function handleCSV(content, filename) {
+  const result = Papa.parse(content, { header:true, skipEmptyLines:true });
+  applyData(result.data, filename);
+}
+
+function handleXLSX(buffer, filename) {
+  const wb = XLSX.read(new Uint8Array(buffer), { type:'array' });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
+  applyData(rows, filename);
+}
+
+function handleFile(file) {
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+  if (ext === 'csv') {
+    reader.onload = e => handleCSV(e.target.result, file.name);
+    reader.readAsText(file, 'UTF-8');
+  } else if (ext === 'xlsx' || ext === 'xls') {
+    reader.onload = e => handleXLSX(e.target.result, file.name);
+    reader.readAsArrayBuffer(file);
+  } else {
+    alert('Formato não suportado. Use .csv ou .xlsx');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOOLTIP
+// ─────────────────────────────────────────────────────────────────────────────
+const tip = document.getElementById('gl-tip');
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('[data-tip]');
+  if (!el) return;
+  tip.textContent = el.dataset.tip;
+  tip.style.opacity = '0';
+  tip.style.display = 'block';
+  requestAnimationFrame(() => {
+    const rect = el.getBoundingClientRect();
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = rect.left + window.scrollX + rect.width / 2 - tw / 2;
+    let top  = rect.top  + window.scrollY - th - 8;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    if (top < window.scrollY) top = rect.bottom + window.scrollY + 8;
+    tip.style.left = left + 'px';
+    tip.style.top  = top + 'px';
+    tip.style.opacity = '1';
+  });
+});
+document.addEventListener('mouseout', e => {
+  if (!e.target.closest('[data-tip]')) return;
+  tip.style.opacity = '0';
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EVENT LISTENERS
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('file-input').addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+document.getElementById('legend-toggle').addEventListener('click', () => {
+  showLegend = !showLegend;
+  document.getElementById('legend').classList.toggle('hidden', !showLegend);
+  document.getElementById('legend-toggle').textContent = showLegend ? 'Ocultar legenda' : 'Ver legenda de status';
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
