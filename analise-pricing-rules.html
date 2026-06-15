@@ -15,24 +15,18 @@
 body{background:var(--bg);color:var(--t2);font-family:'Inter',system-ui,sans-serif;padding:28px 20px;min-height:100vh;font-size:14px;}
 .hidden{display:none!important;}
 #root{max-width:1280px;margin:0 auto;}
-
-/* ── Header ── */
 .header-meta{font-size:10px;color:var(--t6);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px;}
 .header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
 h1{font-size:24px;font-weight:700;color:var(--t1);}
 h1 .accent{color:var(--blue);}
 .subtitle{font-size:12px;color:var(--t5);margin-top:4px;}
 footer{margin-top:24px;text-align:center;font-size:10px;color:var(--t6);}
-
-/* ── Upload ── */
 .upload-area{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .upload-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--s3);color:var(--t3);font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .upload-btn:hover{background:var(--s3);color:var(--t2);}
 .file-badge{font-size:11px;color:var(--green);font-weight:500;}
 .drop-zone{border:2px dashed var(--s3);border-radius:12px;padding:24px;text-align:center;color:var(--t4);font-size:13px;transition:border-color .2s;margin-bottom:18px;}
 .drop-zone.over{border-color:var(--blue);color:var(--blue);}
-
-/* ── Card ── */
 .card{background:var(--s1);border:1px solid var(--s2);border-radius:12px;margin-bottom:16px;}
 .card-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;gap:12px;flex-wrap:wrap;}
 .card-title{font-size:13px;font-weight:700;color:var(--t3);display:flex;align-items:center;gap:8px;}
@@ -40,9 +34,8 @@ footer{margin-top:24px;text-align:center;font-size:10px;color:var(--t6);}
 .card-body.pt{padding-top:4px;}
 .collapse-btn{background:var(--s2);border:1px solid var(--s3);border-radius:6px;color:var(--t4);font-size:11px;padding:4px 10px;cursor:pointer;}
 .collapse-btn:hover{color:var(--t2);}
-.head-actions{display:flex;align-items:center;gap:8px;}
-
-/* ── Rules Manager ── */
+.head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* Rules Manager */
 .rules-tbl{width:100%;border-collapse:collapse;font-size:12px;}
 .rules-tbl th{padding:7px 10px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--s2);}
 .rules-tbl td{padding:7px 10px;border-bottom:1px solid var(--bg);vertical-align:middle;}
@@ -55,7 +48,7 @@ footer{margin-top:24px;text-align:center;font-size:10px;color:var(--t6);}
 .dev-msite{background:#3b82f620;color:#60a5fa;}
 .dev-desktop{background:#8b5cf620;color:#a78bfa;}
 .dev-all{background:#33415520;color:var(--t4);}
-.pri-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;}
+.pri-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;}
 .pri-1{background:#3b82f620;color:#60a5fa;}
 .pri-2{background:#8b5cf620;color:#a78bfa;}
 .pri-3{background:#33415520;color:var(--t4);}
@@ -74,25 +67,21 @@ footer{margin-top:24px;text-align:center;font-size:10px;color:var(--t6);}
 .add-btn{display:flex;align-items:center;gap:6px;background:none;border:1px dashed var(--s3);border-radius:6px;color:var(--t4);font-size:11px;font-weight:600;padding:5px 12px;cursor:pointer;transition:all .2s;}
 .add-btn:hover{border-color:var(--blue);color:var(--blue);}
 .pos-cell{font-family:monospace;color:var(--t4);font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* ── Device Filters ── */
+/* Device Filters */
 .dev-filters{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .dev-filters-label{font-size:10px;color:var(--t5);font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
 .dev-filter-pill{display:flex;align-items:center;gap:6px;background:var(--s1);border:1px solid var(--s2);border-radius:20px;padding:5px 12px;cursor:pointer;user-select:none;transition:all .2s;font-size:12px;font-weight:500;}
 .dev-filter-pill.active{border-color:var(--blue);color:var(--blue);background:#3b82f610;}
-.dev-filter-pill input{display:none;}
 .dev-filter-dot{width:6px;height:6px;border-radius:50%;background:var(--t5);transition:background .2s;}
 .dev-filter-pill.active .dev-filter-dot{background:var(--blue);}
-
-/* ── KPIs ── */
+/* KPIs */
 .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
 @media(max-width:700px){.kpis{grid-template-columns:repeat(3,1fr);}}
 .kpi{background:var(--s1);border:1px solid var(--s2);border-radius:10px;padding:13px 16px;}
 .kpi-label{font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;}
 .kpi-value{font-size:20px;font-weight:700;}
 .kpi-sub{font-size:9px;color:var(--t6);margin-top:2px;}
-
-/* ── Main Table ── */
+/* Table */
 .tbl-wrap{background:var(--s1);border:1px solid var(--s2);border-radius:12px;overflow:hidden;margin-bottom:16px;}
 .tbl-scroll{overflow-x:auto;}
 table.main{width:100%;border-collapse:collapse;min-width:1100px;}
@@ -110,54 +99,79 @@ table.main td{padding:10px 12px;vertical-align:middle;}
 .mval{font-size:13px;font-weight:500;color:var(--t2);}
 .bar-bg{background:var(--bg);border-radius:3px;height:4px;}
 .bar-fill{height:100%;border-radius:3px;}
-
-/* ── Badges ── */
 .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;cursor:default;white-space:nowrap;}
-
-/* ── Diagnostics ── */
+/* Diagnostics */
 .diag-empty{display:flex;align-items:center;gap:10px;padding:14px;font-size:13px;color:var(--green);}
 .alert{border-radius:8px;padding:11px 15px;margin-bottom:8px;border-left:3px solid;}
 .alert-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;}
 .alert-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
 .alert-title{font-size:12px;font-weight:600;color:var(--t2);}
 .alert-desc{font-size:11.5px;color:var(--t3);line-height:1.65;}
-
-/* ── Opportunities ── */
-.opp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;padding-bottom:2px;}
+/* Opportunities */
+.opp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
 .opp-card{background:var(--bg);border:1px solid var(--s2);border-radius:10px;padding:14px 16px;}
-.opp-card-head{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+.opp-card-head{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
 .opp-rule{font-size:10px;color:var(--t5);margin-bottom:10px;}
 .opp-metrics{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap;}
 .opp-metric{display:flex;flex-direction:column;gap:2px;}
 .opp-metric-label{font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.7px;}
 .opp-metric-val{font-size:14px;font-weight:700;}
-.opp-msg{font-size:11px;color:var(--t4);line-height:1.6;border-top:1px solid var(--s2);padding-top:8px;margin-top:2px;}
-.opp-empty{font-size:12px;color:var(--t5);padding:14px;}
-
-/* ── Suggestions Table ── */
+.opp-msg{font-size:11px;color:var(--t4);line-height:1.6;border-top:1px solid var(--s2);padding-top:8px;}
+/* Suggestions */
 .sugg-tbl{width:100%;border-collapse:collapse;}
 .sugg-tbl th{padding:7px 12px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--s2);}
 .sugg-tbl td{padding:8px 12px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:top;}
 .sugg-tbl tr:last-child td{border-bottom:none;}
 .pos-list{font-size:10px;color:var(--t5);line-height:1.7;}
 .pri-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
-
-/* ── Legend ── */
+/* ── Sugerido destaque ── */
+.sugg-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#22c55e20;color:#22c55e;
+  border:1px solid #22c55e50;border-radius:7px;
+  padding:5px 13px;font-size:15px;font-weight:700;
+  box-shadow:0 0 0 3px #22c55e10;
+}
+.sugg-arrow{font-size:11px;opacity:.7;}
+/* Legend */
 .legend-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding:14px 18px;}
 @media(max-width:800px){.legend-grid{grid-template-columns:1fr;}}
 .legend-col-title{font-size:10px;font-weight:700;color:var(--t5);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;}
 .legend-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
 .l-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px;flex-shrink:0;}
 .l-text{font-size:11px;color:var(--t4);line-height:1.5;}
-
-/* ── Tooltip ── */
+/* ── Governance ── */
+.gov-tbl{width:100%;border-collapse:collapse;}
+.gov-tbl th{padding:7px 12px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--s2);}
+.gov-tbl td{padding:9px 12px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:top;}
+.gov-tbl tr:last-child td{border-bottom:none;}
+.gov-sub-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:4px;}
+.new-rule-card{background:var(--bg);border:1px dashed var(--s3);border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+.new-rule-head{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px;}
+.new-rule-metrics{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;}
+.nrm{font-size:12px;font-weight:600;color:var(--t2);}
+.nrm span{font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.6px;display:block;font-weight:400;}
+.new-rule-action{font-size:11px;color:var(--yellow);line-height:1.5;}
+/* ── History ── */
+.gerar-btn{display:flex;align-items:center;gap:7px;background:var(--green);border:none;color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.gerar-btn:hover{background:#16a34a;transform:translateY(-1px);}
+.imp-btn{background:none;border:1px solid var(--s3);color:var(--t4);font-size:11px;padding:6px 12px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.imp-btn:hover{color:var(--t2);border-color:var(--t4);}
+.hist-note{font-size:11px;color:var(--t4);background:var(--bg);border:1px solid var(--s2);border-radius:6px;padding:9px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;line-height:1.6;}
+.hist-tbl{width:100%;border-collapse:collapse;}
+.hist-tbl th{padding:7px 10px;text-align:left;font-size:10px;color:var(--t5);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--s2);}
+.hist-tbl td{padding:8px 10px;border-bottom:1px solid var(--bg);font-size:12px;vertical-align:middle;}
+.hist-tbl tr:last-child td{border-bottom:none;}
+.floor-up{color:var(--green);font-weight:700;}
+.floor-down{color:var(--orange);font-weight:700;}
+.floor-same{color:var(--t5);}
+/* Tooltip */
 #gl-tip{position:absolute;background:#0a111e;border:1px solid var(--s3);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--t3);max-width:260px;line-height:1.55;z-index:9999;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 16px #00000066;}
 </style>
 </head>
 <body>
 <div id="root">
 
-<!-- Header -->
 <div class="header-meta">IDi · Indirect · V5</div>
 <div class="header-row">
   <div>
@@ -171,14 +185,13 @@ table.main td{padding:10px 12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- Drop zone -->
 <div id="drop-zone" class="drop-zone">
   <div style="font-size:24px;margin-bottom:6px">📊</div>
   Arraste um <strong>.csv</strong> ou <strong>.xlsx</strong> exportado do GAM ou use o botão acima.<br>
   <small style="color:var(--t6);margin-top:4px;display:block">Exibindo dados de exemplo.</small>
 </div>
 
-<!-- ⚙️ Rules Manager -->
+<!-- Rules Manager -->
 <div class="card">
   <div class="card-head">
     <div class="card-title">⚙️ Regras de Floor <span id="rules-count" style="font-size:11px;color:var(--t5);font-weight:400"></span></div>
@@ -191,13 +204,8 @@ table.main td{padding:10px 12px;vertical-align:middle;}
     <div class="tbl-scroll">
       <table class="rules-tbl">
         <thead><tr>
-          <th style="width:32px"></th>
-          <th>Nome</th>
-          <th>Dispositivo</th>
-          <th>Prioridade</th>
-          <th>Match (idi_pos)</th>
-          <th>Floor</th>
-          <th style="width:64px"></th>
+          <th style="width:32px"></th><th>Nome</th><th>Dispositivo</th>
+          <th>Prioridade</th><th>Match (idi_pos)</th><th>Floor</th><th style="width:64px"></th>
         </tr></thead>
         <tbody id="rules-tbody"></tbody>
       </table>
@@ -205,7 +213,7 @@ table.main td{padding:10px 12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- 📖 Legend -->
+<!-- Legend -->
 <div class="card">
   <div class="card-head">
     <div class="card-title">📖 Legenda de Status</div>
@@ -217,101 +225,105 @@ table.main td{padding:10px 12px;vertical-align:middle;}
         <div class="legend-col-title">Match Rate</div>
         <div class="legend-item"><span class="l-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Saudável (≥35%)</span><span class="l-text">AdX competindo bem. Lances chegando com frequência no leilão.</span></div>
         <div class="legend-item"><span class="l-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Regular (20–35%)</span><span class="l-text">Match moderado. Monitorar; pode melhorar com ajuste de floor ou targeting.</span></div>
-        <div class="legend-item"><span class="l-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Demanda fraca</span><span class="l-text">(&lt;20% + eCPM &gt;&gt; floor) — Floor ok. Buyers não chegam ao leilão. Investigar supply path e passback.</span></div>
-        <div class="legend-item"><span class="l-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Floor alto</span><span class="l-text">(&lt;20% + eCPM ≈ floor) — Floor bloqueando lances. Reduzir o piso para recuperar volume.</span></div>
+        <div class="legend-item"><span class="l-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Demanda fraca</span><span class="l-text">(&lt;20% + eCPM &gt;&gt; floor) — Floor ok. Buyers não chegam. Investigar supply path.</span></div>
+        <div class="legend-item"><span class="l-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Floor alto</span><span class="l-text">(&lt;20% + eCPM ≈ floor) — Floor bloqueando lances. Reduzir o piso.</span></div>
       </div>
       <div>
         <div class="legend-col-title">Fill Rate</div>
         <div class="legend-item"><span class="l-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Saudável (≥30%)</span><span class="l-text">Alto aproveitamento: AdX ganhando a maioria das requisições com lance.</span></div>
         <div class="legend-item"><span class="l-badge" style="background:#60a5fa1a;color:#60a5fa;border:1px solid #60a5fa40">🔵 Perde p/ demand</span><span class="l-text">(gap match–fill &gt;15pp) — AdX bida mas Direct/HB ganham. Pode ser intencional.</span></div>
-        <div class="legend-item"><span class="l-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Regular (15–30%)</span><span class="l-text">Fill moderado. Avaliar competitividade do AdX no stack de demanda.</span></div>
+        <div class="legend-item"><span class="l-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Regular (15–30%)</span><span class="l-text">Fill moderado. Avaliar competitividade do AdX no stack.</span></div>
         <div class="legend-item"><span class="l-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Baixo (&lt;15%)</span><span class="l-text">Fill crítico. Revisar floor, passback e cadeia de demanda.</span></div>
       </div>
       <div>
         <div class="legend-col-title">Active View</div>
         <div class="legend-item"><span class="l-badge" style="background:#22c55e1a;color:#22c55e;border:1px solid #22c55e40">🟢 Premium (≥70%)</span><span class="l-text">Viewability excelente. Altamente valorizado por buyers premium.</span></div>
         <div class="legend-item"><span class="l-badge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b40">🟡 Boa (50–70%)</span><span class="l-text">Viewability adequada. Compatível com a maioria dos critérios programáticos.</span></div>
-        <div class="legend-item"><span class="l-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Regular (30–50%)</span><span class="l-text">Abaixo da média de mercado (~50%). Pode afetar CPMs e demanda qualificada.</span></div>
+        <div class="legend-item"><span class="l-badge" style="background:#f973161a;color:#f97316;border:1px solid #f9731640">🟠 Regular (30–50%)</span><span class="l-text">Abaixo da média (~50%). Pode afetar CPMs e demanda qualificada.</span></div>
         <div class="legend-item"><span class="l-badge" style="background:#ef44441a;color:#ef4444;border:1px solid #ef444440">🔴 Baixa (&lt;30%)</span><span class="l-text">Viewability crítica. Buyers premium tendem a evitar. Revisar posicionamento.</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Device Filters + KPIs -->
 <div class="dev-filters" id="dev-filters"></div>
 <div class="kpis" id="kpis"></div>
 
-<!-- Main Table -->
 <div class="tbl-wrap"><div class="tbl-scroll">
-  <table class="main">
-    <thead id="tbl-head"></thead>
-    <tbody id="tbl-body"></tbody>
-  </table>
+  <table class="main"><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
 </div></div>
 
-<!-- Diagnostics -->
 <div class="card">
-  <div class="card-head"><div class="card-title">🔍 Diagnóstico <span style="font-size:10px;color:var(--t6);font-weight:400">— posições com imp &gt; 900</span></div></div>
+  <div class="card-head"><div class="card-title">🔍 Diagnóstico <span style="font-size:10px;color:var(--t6);font-weight:400">— imp &gt; 900</span></div></div>
   <div id="diag-body" class="card-body pt"></div>
 </div>
 
-<!-- Opportunities -->
 <div class="card">
   <div class="card-head"><div class="card-title">💡 Oportunidades <span style="font-size:10px;color:var(--t6);font-weight:400">— AV &gt; 70% · floor subaproveitado · imp &gt; 900</span></div></div>
   <div id="opp-body" class="card-body pt"></div>
 </div>
 
-<!-- Suggestions -->
 <div class="card">
   <div class="card-head"><div class="card-title">📐 Propostas de Ajuste de Floor <span style="font-size:10px;color:var(--t6);font-weight:400">— agrupado por regra</span></div></div>
   <div class="card-body pt"><div class="tbl-scroll">
     <table class="sugg-tbl">
       <thead><tr>
         <th>Regra</th><th>Posições</th><th>Floor</th>
-        <th>eCPM Médio</th><th>Vs Floor</th>
-        <th>Ação</th><th>Prioridade</th>
+        <th>eCPM Médio</th><th>Vs Floor</th><th>Ação</th>
+        <th>Sugerido</th><th>Prioridade</th>
       </tr></thead>
       <tbody id="sugg-body"></tbody>
     </table>
   </div></div>
 </div>
 
+<!-- Governance -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">🧠 Análise de Governança <span style="font-size:10px;color:var(--t6);font-weight:400">— saúde das regras · cobertura · sugestões</span></div>
+    <button class="collapse-btn" id="gov-toggle">Recolher</button>
+  </div>
+  <div class="card-body pt" id="gov-body"></div>
+</div>
+
+<!-- History -->
+<div class="card">
+  <div class="card-head">
+    <div class="card-title">📋 Histórico de Alterações <span id="hist-count" style="font-size:11px;color:var(--t5);font-weight:400"></span></div>
+    <div class="head-actions">
+      <button class="imp-btn" onclick="document.getElementById('hist-file').click()">📂 Importar histórico</button>
+      <input type="file" id="hist-file" accept=".xlsx,.xls" style="display:none">
+      <button class="gerar-btn" onclick="doSnapshot()">📊 Gerar Histórico</button>
+    </div>
+  </div>
+  <div id="hist-body" class="card-body pt"></div>
+</div>
+
 <footer>IDi · Indirect · V5 · Ad Exchange GAM</footer>
 </div>
 
 <div id="gl-tip"></div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 'use strict';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COLUMNS DEFINITION
-// ─────────────────────────────────────────────────────────────────────────────
 const COLS = [
-  { key:'pos',       label:'Posição',         type:'text' },
-  { key:'device',    label:'Device',          type:'text' },
-  { key:'ruleName',  label:'Regra Aplicada',  type:'text' },
-  { key:'match',     label:'Match Rate',      type:'num'  },
-  { key:'fill',      label:'Fill Rate',       type:'num'  },
-  { key:'rpm',       label:'RPM',             type:'num'  },
-  { key:'imp',       label:'Impressões',      type:'num'  },
-  { key:'av',        label:'Active View',     type:'num'  },
-  { key:'ecpm',      label:'eCPM',            type:'num'  },
-  { key:'floor',     label:'Floor',           type:'num'  },
-  { key:'vsFloor',   label:'Vs Floor',        type:'num'  },
-  { key:'rev',       label:'Receita',         type:'num'  },
+  { key:'pos',      label:'Posição',        type:'text' },
+  { key:'device',   label:'Device',         type:'text' },
+  { key:'ruleName', label:'Regra Aplicada', type:'text' },
+  { key:'match',    label:'Match Rate',     type:'num'  },
+  { key:'fill',     label:'Fill Rate',      type:'num'  },
+  { key:'rpm',      label:'RPM',            type:'num'  },
+  { key:'imp',      label:'Impressões',     type:'num'  },
+  { key:'av',       label:'Active View',    type:'num'  },
+  { key:'ecpm',     label:'eCPM',           type:'num'  },
+  { key:'floor',    label:'Floor',          type:'num'  },
+  { key:'vsFloor',  label:'Vs Floor',       type:'num'  },
+  { key:'rev',      label:'Receita',        type:'num'  },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DEFAULT RULES  (V5 — seção 16 do spec)
-// ─────────────────────────────────────────────────────────────────────────────
-// priority: 1=específica · 2=geral · 3=wildcard
-// pos: pode ser lista separada por vírgula, ex: "high,article-high"
 const DEFAULT_RULES_V5 = [
-  // Nível 1 — Específicas (Calc context — floor a configurar)
   { id:1,  active:false, priority:1, name:'IDI | Calc | Desk | Sidebar',              device:'desktop', pos:'sidebar',          floor:0    },
   { id:2,  active:false, priority:1, name:'IDI | Calc | Desktop | Calc-Result',       device:'desktop', pos:'calc-result',      floor:0    },
   { id:3,  active:false, priority:1, name:'IDI | Calc | Desktop | Premium',           device:'desktop', pos:'premium',          floor:0    },
@@ -320,7 +332,6 @@ const DEFAULT_RULES_V5 = [
   { id:6,  active:false, priority:1, name:'IDI | Calc | Msite | Calc-Result',         device:'msite',   pos:'calc-result',      floor:0    },
   { id:7,  active:false, priority:1, name:'IDI | Calc | Msite | Head',                device:'msite',   pos:'head',             floor:0    },
   { id:8,  active:false, priority:1, name:'IDI | Calc | Msite | Premium',             device:'msite',   pos:'premium',          floor:0    },
-  // Nível 2 — Gerais (floors configurados)
   { id:9,  active:true,  priority:2, name:'IDI | Desktop | Sidebar',                  device:'desktop', pos:'sidebar',          floor:2.50 },
   { id:10, active:true,  priority:2, name:'IDI | Geral | Desktop | Content',          device:'desktop', pos:'content',          floor:2.50 },
   { id:11, active:true,  priority:2, name:'IDI | Geral | Msite | High',               device:'msite',   pos:'high',             floor:2.80 },
@@ -328,108 +339,99 @@ const DEFAULT_RULES_V5 = [
   { id:13, active:true,  priority:2, name:'IDI | Geral | Msite | Standard',           device:'msite',   pos:'standard',         floor:2.40 },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────────────────────────────────────
-let rules        = loadRules();
-let nextId       = Math.max(...rules.map(r => r.id)) + 1;
-let editingId    = null;
-let allData      = [];
-let deviceFilters= loadDeviceFilters();  // { Desktop:true, Smartphone:true, Tablet:false, Others:false }
-let sortKey      = null;  // null = default sort (Device ASC, RPM DESC)
-let sortDir      = 'asc';
+// ── State ──────────────────────────────────────────────────────────────────────
+let rules         = loadRules();
+let nextId        = Math.max(...rules.map(r => r.id)) + 1;
+let editingId     = null;
+let allData       = [];
+let deviceFilters = loadDeviceFilters();
+let sortKey       = null;
+let sortDir       = 'asc';
+let historyRows   = loadHistory();
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PERSISTENCE
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Persistence ───────────────────────────────────────────────────────────────
 function loadRules() {
-  try {
-    const s = localStorage.getItem('idi-rules-v5');
-    if (s) return JSON.parse(s);
-  } catch(e) {}
+  try { const s = localStorage.getItem('idi-rules-v5'); if (s) return JSON.parse(s); } catch(e) {}
   return DEFAULT_RULES_V5.map(r => ({...r}));
 }
-function saveRules() {
-  try { localStorage.setItem('idi-rules-v5', JSON.stringify(rules)); } catch(e) {}
-}
+function saveRules() { try { localStorage.setItem('idi-rules-v5', JSON.stringify(rules)); } catch(e) {} }
 function loadDeviceFilters() {
-  try {
-    const s = localStorage.getItem('idi-devices-v1');
-    if (s) return JSON.parse(s);
-  } catch(e) {}
+  try { const s = localStorage.getItem('idi-devices-v1'); if (s) return JSON.parse(s); } catch(e) {}
   return { Desktop:true, Smartphone:true, Tablet:false, Others:false };
 }
-function saveDeviceFilters() {
-  try { localStorage.setItem('idi-devices-v1', JSON.stringify(deviceFilters)); } catch(e) {}
+function saveDeviceFilters() { try { localStorage.setItem('idi-devices-v1', JSON.stringify(deviceFilters)); } catch(e) {} }
+function loadHistory() {
+  try { const s = localStorage.getItem('idi-history-v1'); if (s) return JSON.parse(s); } catch(e) {}
+  return [];
 }
+function saveHistory() { try { localStorage.setItem('idi-history-v1', JSON.stringify(historyRows)); } catch(e) {} }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FLOOR MATCHING ENGINE  (V5 — rastreável, prioridade, múltiplos pos)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Floor matching engine ──────────────────────────────────────────────────────
 function findFloorResult(device, pos, adUnit) {
   const isD = device === 'Desktop';
   const isM = device === 'Smartphone' || device === 'Tablet';
-  const posLow    = (pos    || '').toLowerCase();
-  const unitLow   = (adUnit || '').toLowerCase();
-
-  // Eligible: active + floor configured (> 0)
+  const posLow  = (pos    || '').toLowerCase();
+  const unitLow = (adUnit || '').toLowerCase();
   const eligible = rules
     .filter(r => r.active && r.floor > 0)
-    .filter(r => {
-      if (r.device === 'desktop') return isD;
-      if (r.device === 'msite')   return isM;
-      return true; // 'all'
-    })
+    .filter(r => r.device === 'desktop' ? isD : r.device === 'msite' ? isM : true)
     .sort((a, b) => a.priority - b.priority || a.id - b.id);
-
-  // Try non-wildcard rules first (priority order)
   for (const r of eligible.filter(r => r.pos !== '*')) {
     const list = r.pos.split(',').map(p => p.trim().toLowerCase()).filter(Boolean);
-    const hit  = list.some(p => posLow === p || unitLow.includes(p));
-    if (hit) return { floor: r.floor, ruleId: r.id, ruleName: r.name };
+    if (list.some(p => posLow === p || unitLow.includes(p)))
+      return { floor: r.floor, ruleId: r.id, ruleName: r.name };
   }
-
-  // Wildcard fallback
   const wild = eligible.find(r => r.pos === '*');
   if (wild) return { floor: wild.floor, ruleId: wild.id, ruleName: wild.name };
-
   return { floor: null, ruleId: null, ruleName: null };
 }
-
 function withFloors(data) {
   return data.map(r => {
     const { floor, ruleId, ruleName } = findFloorResult(r.device, r.pos, r.adUnit);
-    const vsFloor = floor > 0 ? r.ecpm / floor : null;
-    return { ...r, floor, ruleId, ruleName, vsFloor };
+    return { ...r, floor, ruleId, ruleName, vsFloor: floor > 0 ? r.ecpm / floor : null };
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DEFAULT DATA
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Suggested floor (shared between suggestions + history) ────────────────────
+function calcSuggestedFloor(ecpm, floor) {
+  if (!floor || floor <= 0) return null;
+  const r = ecpm / floor;
+  if (ecpm < floor)  return +(ecpm  * 0.85).toFixed(2);
+  if (r < 1.35)      return +(floor * 0.82).toFixed(2);
+  if (r <= 2.5)      return +(floor * 1.35).toFixed(2);
+  return               +(floor * 1.65).toFixed(2);
+}
+function calcAction(ecpm, floor) {
+  if (!floor) return { action:'—', pri:'N/A', pc:'#64748b' };
+  const r = ecpm / floor;
+  if (ecpm < floor)  return { action:'Reduzir floor — bloqueio de demanda ativo',                                            pri:'Alta',  pc:'#ef4444' };
+  if (r < 1.35)      return { action:'Testar redução leve do floor para ganhar volume',                                      pri:'Baixa', pc:'#22c55e' };
+  if (r <= 2.5)      return { action:'Existe espaço para elevar o floor sem comprometer a demanda',                          pri:'Média', pc:'#f59e0b' };
+  return               { action:'eCPM significativamente acima do floor atual. Aumento mais agressivo recomendado',          pri:'Alta',  pc:'#60a5fa' };
+}
+
+// ── Default data ──────────────────────────────────────────────────────────────
 const RAW_DEFAULT = [
-  { pos:'premium',  device:'Smartphone', imp:11739, req:56588, rev:90.73, match:43.4, fill:20.7, ecpm:7.73, av:52.7, rpm:1.60, adUnit:'' },
-  { pos:'high',     device:'Smartphone', imp:12185, req:61353, rev:76.87, match:38.3, fill:19.9, ecpm:6.31, av:44.0, rpm:1.25, adUnit:'' },
-  { pos:'standard', device:'Smartphone', imp:6595,  req:56522, rev:31.37, match:34.3, fill:11.7, ecpm:4.76, av:46.3, rpm:0.56, adUnit:'' },
-  { pos:'premium',  device:'Tablet',     imp:94,    req:878,   rev:0.48,  match:17.3, fill:10.7, ecpm:5.11, av:46.7, rpm:0.55, adUnit:'' },
-  { pos:'high',     device:'Tablet',     imp:82,    req:962,   rev:0.24,  match:13.1, fill:8.5,  ecpm:2.93, av:29.3, rpm:0.25, adUnit:'' },
-  { pos:'standard', device:'Tablet',     imp:34,    req:892,   rev:0.06,  match:8.9,  fill:3.8,  ecpm:1.76, av:36.5, rpm:0.07, adUnit:'' },
-  { pos:'sidebar',  device:'Desktop',    imp:9469,  req:23941, rev:63.97, match:40.4, fill:39.6, ecpm:6.76, av:95.5, rpm:2.67, adUnit:'' },
-  { pos:'premium',  device:'Desktop',    imp:12011, req:34526, rev:48.09, match:40.3, fill:34.8, ecpm:4.00, av:44.4, rpm:1.39, adUnit:'' },
-  { pos:'high',     device:'Desktop',    imp:14739, req:42624, rev:46.33, match:35.4, fill:34.6, ecpm:3.14, av:40.4, rpm:1.09, adUnit:'' },
-  { pos:'standard', device:'Desktop',    imp:6976,  req:37586, rev:22.91, match:26.9, fill:18.6, ecpm:3.28, av:47.5, rpm:0.61, adUnit:'' },
-  { pos:'anchor',   device:'Desktop',    imp:14,    req:85,    rev:0.07,  match:41.6, fill:16.5, ecpm:5.00, av:92.9, rpm:0.82, adUnit:'' },
+  { pos:'premium', device:'Smartphone',imp:11739,req:56588,rev:90.73,match:43.4,fill:20.7,ecpm:7.73,av:52.7,rpm:1.60,adUnit:'' },
+  { pos:'high',    device:'Smartphone',imp:12185,req:61353,rev:76.87,match:38.3,fill:19.9,ecpm:6.31,av:44.0,rpm:1.25,adUnit:'' },
+  { pos:'standard',device:'Smartphone',imp:6595, req:56522,rev:31.37,match:34.3,fill:11.7,ecpm:4.76,av:46.3,rpm:0.56,adUnit:'' },
+  { pos:'premium', device:'Tablet',    imp:94,   req:878,  rev:0.48, match:17.3,fill:10.7,ecpm:5.11,av:46.7,rpm:0.55,adUnit:'' },
+  { pos:'high',    device:'Tablet',    imp:82,   req:962,  rev:0.24, match:13.1,fill:8.5, ecpm:2.93,av:29.3,rpm:0.25,adUnit:'' },
+  { pos:'standard',device:'Tablet',   imp:34,   req:892,  rev:0.06, match:8.9, fill:3.8, ecpm:1.76,av:36.5,rpm:0.07,adUnit:'' },
+  { pos:'sidebar', device:'Desktop',  imp:9469, req:23941,rev:63.97,match:40.4,fill:39.6,ecpm:6.76,av:95.5,rpm:2.67,adUnit:'' },
+  { pos:'premium', device:'Desktop',  imp:12011,req:34526,rev:48.09,match:40.3,fill:34.8,ecpm:4.00,av:44.4,rpm:1.39,adUnit:'' },
+  { pos:'high',    device:'Desktop',  imp:14739,req:42624,rev:46.33,match:35.4,fill:34.6,ecpm:3.14,av:40.4,rpm:1.09,adUnit:'' },
+  { pos:'standard',device:'Desktop',  imp:6976, req:37586,rev:22.91,match:26.9,fill:18.6,ecpm:3.28,av:47.5,rpm:0.61,adUnit:'' },
+  { pos:'anchor',  device:'Desktop',  imp:14,   req:85,   rev:0.07, match:41.6,fill:16.5,ecpm:5.00,av:92.9,rpm:0.82,adUnit:'' },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// STATUS HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Status helpers ─────────────────────────────────────────────────────────────
 function matchSt(match, ecpm, floor) {
   const ratio = floor > 0 ? ecpm / floor : 99;
   if (match >= 35) return { label:'Saudável',      c:'#22c55e', tip:'🟢 Saudável (≥35%) — AdX competindo bem. Lances chegando com frequência no leilão.' };
   if (match >= 20) return { label:'Regular',        c:'#f59e0b', tip:'🟡 Regular (20–35%) — Match moderado. Monitorar tendência; pode melhorar com ajuste de floor ou targeting.' };
   if (ratio >= 1.5) return { label:'Demanda fraca', c:'#f97316', tip:'🟠 Demanda fraca (<20% + eCPM >> floor) — Floor ok. Buyers não chegam ao leilão. Investigar supply path, passback e targeting.' };
-  return                  { label:'Floor alto',     c:'#ef4444', tip:'🔴 Floor alto (<20% + eCPM ≈ floor) — Floor bloqueando lances. Considerar reduzir o piso para recuperar volume.' };
+  return                  { label:'Floor alto',     c:'#ef4444', tip:'🔴 Floor alto (<20% + eCPM ≈ floor) — Floor pode estar bloqueando lances. Considerar reduzir o piso para recuperar volume.' };
 }
 function fillSt(fill, match) {
   const gap = match - fill;
@@ -451,10 +453,6 @@ function floorSt(ecpm, floor) {
   return { label: ecpm < floor ? '⚠ ABAIXO' : r.toFixed(1)+'×', c };
 }
 function rpmColor(r) { return r >= 2 ? '#22c55e' : r >= 1 ? '#f59e0b' : r >= 0.5 ? '#f97316' : '#ef4444'; }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HTML HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
 function bdg(label, c, tip) {
   const d = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : '';
   return `<span class="badge"${d} style="background:${c}1a;color:${c};border:1px solid ${c}40">${label}</span>`;
@@ -463,9 +461,7 @@ function bar(v, max, c) {
   return `<div class="bar-bg"><div class="bar-fill" style="width:${Math.min(v/max*100,100).toFixed(1)}%;background:${c}"></div></div>`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FILTERING & SORTING
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Filtering & Sorting ───────────────────────────────────────────────────────
 function getFiltered() {
   return allData.filter(r => {
     if (r.device === 'Desktop')    return deviceFilters.Desktop;
@@ -487,172 +483,114 @@ function sortedData() {
   if (!sortKey) return data.slice().sort(defaultSort);
   return data.slice().sort((a, b) => {
     const col = COLS.find(c => c.key === sortKey);
-    let va = a[sortKey] ?? -Infinity;
-    let vb = b[sortKey] ?? -Infinity;
-    if (va === null) va = -Infinity;
-    if (vb === null) vb = -Infinity;
+    let va = a[sortKey] ?? -Infinity, vb = b[sortKey] ?? -Infinity;
+    if (va === null) va = -Infinity; if (vb === null) vb = -Infinity;
     let cmp = col.type === 'text' ? String(va).localeCompare(String(vb)) : va - vb;
     return sortDir === 'asc' ? cmp : -cmp;
   });
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SORT HANDLER
-// ─────────────────────────────────────────────────────────────────────────────
 function sortBy(key) {
-  if (sortKey === key) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
-  else { sortKey = key; sortDir = 'asc'; }
+  sortKey === key ? (sortDir = sortDir === 'asc' ? 'desc' : 'asc') : (sortKey = key, sortDir = 'asc');
   renderTable();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER RULES MANAGER
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Rules Manager ──────────────────────────────────────────────────────
 function renderRules() {
   const active = rules.filter(r => r.active && r.floor > 0).length;
   document.getElementById('rules-count').textContent = `— ${rules.length} regras · ${active} ativas`;
-
-  const devPill = d => {
-    if (d==='msite')   return `<span class="dev-pill dev-msite">msite</span>`;
-    if (d==='desktop') return `<span class="dev-pill dev-desktop">desktop</span>`;
-    return `<span class="dev-pill dev-all">all</span>`;
-  };
-  const priTag = p => {
-    const l = p===1?'Específica':p===2?'Geral':'Wildcard';
-    return `<span class="pri-tag pri-${p}">${l}</span>`;
-  };
-
+  const devPill = d => d==='msite'?`<span class="dev-pill dev-msite">msite</span>`:d==='desktop'?`<span class="dev-pill dev-desktop">desktop</span>`:`<span class="dev-pill dev-all">all</span>`;
+  const priTag  = p => `<span class="pri-tag pri-${p}">${p===1?'Específica':p===2?'Geral':'Wildcard'}</span>`;
   const rows = rules.map(r => {
-    if (editingId === r.id) {
-      return `<tr id="rr-${r.id}" style="background:#0f1e35">
-        <td></td>
-        <td><input class="rule-input" id="e-name" value="${r.name.replace(/"/g,'&quot;')}"></td>
-        <td><select class="sel-inp" id="e-dev">
-          <option value="msite"   ${r.device==='msite'?'selected':''}>msite</option>
-          <option value="desktop" ${r.device==='desktop'?'selected':''}>desktop</option>
-          <option value="all"     ${r.device==='all'?'selected':''}>all</option>
-        </select></td>
-        <td><select class="sel-inp" id="e-pri">
-          <option value="1" ${r.priority===1?'selected':''}>1 – Específica</option>
-          <option value="2" ${r.priority===2?'selected':''}>2 – Geral</option>
-          <option value="3" ${r.priority===3?'selected':''}>3 – Wildcard</option>
-        </select></td>
-        <td><input class="rule-input" id="e-pos" value="${r.pos}" placeholder="ex: high ou high,article-high" style="width:160px"></td>
-        <td><input class="rule-input" id="e-floor" type="number" step="0.01" min="0" value="${r.floor}" style="width:70px"></td>
-        <td><button class="save-btn" onclick="saveEdit(${r.id})">✓</button> <button class="cancel-btn" onclick="cancelEdit()">✕</button></td>
-      </tr>`;
-    }
+    if (editingId === r.id) return `<tr id="rr-${r.id}" style="background:#0f1e35">
+      <td></td>
+      <td><input class="rule-input" id="e-name" value="${r.name.replace(/"/g,'&quot;')}"></td>
+      <td><select class="sel-inp" id="e-dev"><option value="msite" ${r.device==='msite'?'selected':''}>msite</option><option value="desktop" ${r.device==='desktop'?'selected':''}>desktop</option><option value="all" ${r.device==='all'?'selected':''}>all</option></select></td>
+      <td><select class="sel-inp" id="e-pri"><option value="1" ${r.priority===1?'selected':''}>1-Específica</option><option value="2" ${r.priority===2?'selected':''}>2-Geral</option><option value="3" ${r.priority===3?'selected':''}>3-Wildcard</option></select></td>
+      <td><input class="rule-input" id="e-pos" value="${r.pos}" style="width:160px"></td>
+      <td><input class="rule-input" id="e-floor" type="number" step="0.01" min="0" value="${r.floor}" style="width:70px"></td>
+      <td><button class="save-btn" onclick="saveEdit(${r.id})">✓</button> <button class="cancel-btn" onclick="cancelEdit()">✕</button></td>
+    </tr>`;
     const dim = r.active ? '' : ' inactive';
-    const floorHtml = r.floor > 0
-      ? `<span class="floor-val">R$${r.floor.toFixed(2)}</span>`
-      : `<span class="floor-unset">—<span class="unset-warn">⚠ definir antes de ativar</span></span>`;
+    const floorHtml = r.floor > 0 ? `<span class="floor-val">R$${r.floor.toFixed(2)}</span>` : `<span class="floor-unset">—<span class="unset-warn">⚠ definir antes de ativar</span></span>`;
     return `<tr id="rr-${r.id}" class="${dim}">
-      <td><button class="toggle-circle ${r.active?'on':'off'}" onclick="toggleRule(${r.id})" title="${r.active?'Desativar':'Ativar'}">${r.active?'●':'○'}</button></td>
+      <td><button class="toggle-circle ${r.active?'on':'off'}" onclick="toggleRule(${r.id})">${r.active?'●':'○'}</button></td>
       <td style="color:var(--t2);font-size:12px">${r.name}</td>
-      <td>${devPill(r.device)}</td>
-      <td>${priTag(r.priority)}</td>
+      <td>${devPill(r.device)}</td><td>${priTag(r.priority)}</td>
       <td class="pos-cell" data-tip="${r.pos}">${r.pos}</td>
       <td>${floorHtml}</td>
-      <td style="white-space:nowrap">
-        <button class="icon-btn" onclick="startEdit(${r.id})">✎</button>
-        <button class="icon-btn danger" onclick="deleteRule(${r.id})">✕</button>
-      </td>
+      <td style="white-space:nowrap"><button class="icon-btn" onclick="startEdit(${r.id})">✎</button><button class="icon-btn danger" onclick="deleteRule(${r.id})">✕</button></td>
     </tr>`;
   }).join('');
-
   const addRow = editingId === -1
-    ? `<tr style="background:#0f1e35">
-        <td></td>
+    ? `<tr style="background:#0f1e35"><td></td>
         <td><input class="rule-input" id="e-name" placeholder="Nome da regra"></td>
         <td><select class="sel-inp" id="e-dev"><option value="msite">msite</option><option value="desktop">desktop</option><option value="all">all</option></select></td>
-        <td><select class="sel-inp" id="e-pri"><option value="1">1 – Específica</option><option value="2" selected>2 – Geral</option><option value="3">3 – Wildcard</option></select></td>
+        <td><select class="sel-inp" id="e-pri"><option value="1">1-Específica</option><option value="2" selected>2-Geral</option><option value="3">3-Wildcard</option></select></td>
         <td><input class="rule-input" id="e-pos" placeholder="ex: high ou high,article" style="width:160px"></td>
         <td><input class="rule-input" id="e-floor" type="number" step="0.01" min="0" placeholder="0.00" style="width:70px"></td>
         <td><button class="save-btn" onclick="saveAdd()">✓ Salvar</button> <button class="cancel-btn" onclick="cancelEdit()">✕</button></td>
       </tr>`
     : `<tr><td colspan="7" style="padding:10px"><button class="add-btn" onclick="startAdd()">＋ Adicionar nova regra</button></td></tr>`;
-
   document.getElementById('rules-tbody').innerHTML = rows + addRow;
 }
-
 function toggleRule(id) {
-  const r = rules.find(r => r.id === id); if (!r) return;
-  if (!r.active && r.floor <= 0) { alert('Defina um floor antes de ativar.'); return; }
+  const r = rules.find(r=>r.id===id); if (!r) return;
+  if (!r.active && r.floor<=0) { alert('Defina um floor antes de ativar.'); return; }
   r.active = !r.active; saveRules(); recompute();
 }
-function startEdit(id) { editingId = id; renderRules(); }
-function startAdd()    { editingId = -1; renderRules(); document.getElementById('e-name').focus(); }
-function cancelEdit()  { editingId = null; renderRules(); }
+function startEdit(id) { editingId=id; renderRules(); }
+function startAdd()    { editingId=-1; renderRules(); document.getElementById('e-name').focus(); }
+function cancelEdit()  { editingId=null; renderRules(); }
 function saveEdit(id) {
-  const r = rules.find(r => r.id === id); if (!r) return;
-  r.name     = document.getElementById('e-name').value.trim() || r.name;
-  r.device   = document.getElementById('e-dev').value;
-  r.priority = parseInt(document.getElementById('e-pri').value);
-  r.pos      = document.getElementById('e-pos').value.trim().toLowerCase() || r.pos;
-  r.floor    = parseFloat(document.getElementById('e-floor').value) || 0;
-  editingId  = null; saveRules(); recompute();
+  const r = rules.find(r=>r.id===id); if (!r) return;
+  r.name=document.getElementById('e-name').value.trim()||r.name;
+  r.device=document.getElementById('e-dev').value;
+  r.priority=parseInt(document.getElementById('e-pri').value);
+  r.pos=document.getElementById('e-pos').value.trim().toLowerCase()||r.pos;
+  r.floor=parseFloat(document.getElementById('e-floor').value)||0;
+  editingId=null; saveRules(); recompute();
 }
 function saveAdd() {
-  const name  = document.getElementById('e-name').value.trim();
-  const pos   = document.getElementById('e-pos').value.trim().toLowerCase();
-  if (!name || !pos) { alert('Preencha nome e match (idi_pos).'); return; }
-  const floor = parseFloat(document.getElementById('e-floor').value) || 0;
-  rules.push({ id:nextId++, active:floor>0, priority:parseInt(document.getElementById('e-pri').value),
-    name, device:document.getElementById('e-dev').value, pos, floor });
-  editingId = null; saveRules(); recompute();
+  const name=document.getElementById('e-name').value.trim(), pos=document.getElementById('e-pos').value.trim().toLowerCase();
+  if (!name||!pos) { alert('Preencha nome e match.'); return; }
+  const floor=parseFloat(document.getElementById('e-floor').value)||0;
+  rules.push({ id:nextId++, active:floor>0, priority:parseInt(document.getElementById('e-pri').value), name, device:document.getElementById('e-dev').value, pos, floor });
+  editingId=null; saveRules(); recompute();
 }
 function deleteRule(id) {
   if (!confirm('Excluir esta regra?')) return;
-  rules = rules.filter(r => r.id !== id); saveRules(); recompute();
+  rules=rules.filter(r=>r.id!==id); saveRules(); recompute();
+}
+function quickAddRule(name, device, pos, floor) {
+  rules.push({ id:nextId++, active:true, priority:2, name, device, pos, floor });
+  saveRules(); recompute();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER DEVICE FILTERS
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Device Filters ─────────────────────────────────────────────────────
 function renderDeviceFilters() {
-  const items = [
-    { key:'Desktop',    label:'🖥 Desktop'    },
-    { key:'Smartphone', label:'📱 Smartphone' },
-    { key:'Tablet',     label:'💻 Tablet'     },
-    { key:'Others',     label:'📺 Outros'     },
-  ];
   document.getElementById('dev-filters').innerHTML =
     `<span class="dev-filters-label">Devices:</span>` +
-    items.map(i => `
-      <label class="dev-filter-pill ${deviceFilters[i.key]?'active':''}" onclick="toggleDevice('${i.key}')">
-        <span class="dev-filter-dot"></span>${i.label}
-      </label>`).join('');
+    [['Desktop','🖥 Desktop'],['Smartphone','📱 Smartphone'],['Tablet','💻 Tablet'],['Others','📺 Outros']].map(([k,l]) =>
+      `<label class="dev-filter-pill ${deviceFilters[k]?'active':''}" onclick="toggleDevice('${k}')">
+        <span class="dev-filter-dot"></span>${l}</label>`).join('');
 }
-function toggleDevice(key) {
-  deviceFilters[key] = !deviceFilters[key];
-  saveDeviceFilters(); renderDeviceFilters(); render();
-}
+function toggleDevice(key) { deviceFilters[key]=!deviceFilters[key]; saveDeviceFilters(); renderDeviceFilters(); render(); }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER KPIs
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render KPIs ───────────────────────────────────────────────────────────────
 function renderKPIs() {
-  const rows = getFiltered();
-  const imp  = rows.reduce((a,r)=>a+r.imp,0);
-  const req  = rows.reduce((a,r)=>a+r.req,0);
-  const rev  = rows.reduce((a,r)=>a+r.rev,0);
-  const mAvg = rows.length ? (rows.reduce((a,r)=>a+r.match*r.req,0)/Math.max(req,1)).toFixed(1) : '0';
-  const fill = req>0 ? (imp/req*100).toFixed(1) : '0';
-  const rpm  = req>0 ? (rev/req*1000).toFixed(2) : '0';
-  document.getElementById('kpis').innerHTML = [
+  const rows=getFiltered(), imp=rows.reduce((a,r)=>a+r.imp,0), req=rows.reduce((a,r)=>a+r.req,0), rev=rows.reduce((a,r)=>a+r.rev,0);
+  const mAvg=rows.length?(rows.reduce((a,r)=>a+r.match*r.req,0)/Math.max(req,1)).toFixed(1):'0';
+  const fill=req>0?(imp/req*100).toFixed(1):'0', rpm=req>0?(rev/req*1000).toFixed(2):'0';
+  document.getElementById('kpis').innerHTML=[
     { label:'Impressões', value:imp.toLocaleString('pt-BR'), color:'var(--blue)',   sub:'' },
     { label:'Match Rate', value:`${mAvg}%`,                  color:'var(--cyan)',   sub:'ponderado por req' },
     { label:'Fill Rate',  value:`${fill}%`,                  color:'var(--purple)', sub:'imp / req' },
     { label:'RPM',        value:`R$${rpm}`,                  color:'#a78bfa',       sub:'rev / 1k req' },
     { label:'Receita',    value:`R$${rev.toFixed(2)}`,       color:'var(--green)',  sub:'' },
-  ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div>
-    <div class="kpi-value" style="color:${k.color}">${k.value}</div>
-    ${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
+  ].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${k.color}">${k.value}</div>${k.sub?`<div class="kpi-sub">${k.sub}</div>`:''}</div>`).join('');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER TABLE  (sortable headers + Regra Aplicada column)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Table ──────────────────────────────────────────────────────────────
 function renderTableHead() {
   document.getElementById('tbl-head').innerHTML = '<tr>' + COLS.map(c => {
     const si = sortKey===c.key ? (sortDir==='asc'?'▲':'▼') : '';
@@ -661,22 +599,10 @@ function renderTableHead() {
 }
 function renderTable() {
   renderTableHead();
-  const rows = sortedData();
-  document.getElementById('tbl-body').innerHTML = rows.map(r => {
-    const ms  = matchSt(r.match, r.ecpm, r.floor);
-    const fs  = fillSt(r.fill, r.match);
-    const as  = avSt(r.av);
-    const fls = floorSt(r.ecpm, r.floor);
-    const rc  = rpmColor(r.rpm);
-    const ruleHtml = r.ruleName
-      ? `<span class="rule-cell" data-tip="${r.ruleName.replace(/"/g,'&quot;')}">${r.ruleName}</span>`
-      : `<span style="color:var(--t6);font-size:11px">—</span>`;
-    const floorHtml = r.floor!=null
-      ? `R$${r.floor.toFixed(2)}`
-      : `<span style="color:var(--t6)">—</span>`;
-    const vsHtml = fls
-      ? `<span class="badge" style="background:${fls.c}1a;color:${fls.c};border:1px solid ${fls.c}40">${fls.label}</span>`
-      : `<span style="color:var(--t6)">—</span>`;
+  document.getElementById('tbl-body').innerHTML = sortedData().map(r => {
+    const ms=matchSt(r.match,r.ecpm,r.floor), fs=fillSt(r.fill,r.match), as=avSt(r.av), fls=floorSt(r.ecpm,r.floor), rc=rpmColor(r.rpm);
+    const ruleHtml = r.ruleName ? `<span class="rule-cell" data-tip="${r.ruleName.replace(/"/g,'&quot;')}">${r.ruleName}</span>` : `<span style="color:var(--t6);font-size:11px">—</span>`;
+    const vsHtml = fls ? `<span class="badge" style="background:${fls.c}1a;color:${fls.c};border:1px solid ${fls.c}40">${fls.label}</span>` : `<span style="color:var(--t6)">—</span>`;
     return `<tr>
       <td style="font-weight:600;color:var(--t2);font-size:13px;text-transform:capitalize">${r.pos}</td>
       <td style="color:var(--t4);font-size:11px">${r.device}</td>
@@ -687,96 +613,53 @@ function renderTable() {
       <td style="color:var(--t3);font-size:13px">${r.imp.toLocaleString('pt-BR')}</td>
       <td class="mc"><div class="mrow"><span class="mval">${r.av.toFixed(1)}%</span>${bdg(as.label,as.c,as.tip)}</div>${bar(r.av,100,as.c)}</td>
       <td style="font-weight:600;font-size:13px">R$${r.ecpm.toFixed(2)}</td>
-      <td style="color:var(--t5);font-size:12px">${floorHtml}</td>
+      <td style="color:var(--t5);font-size:12px">${r.floor!=null?'R$'+r.floor.toFixed(2):'<span style="color:var(--t6)">—</span>'}</td>
       <td>${vsHtml}</td>
       <td style="font-weight:600;font-size:13px;color:var(--green)">R$${r.rev.toFixed(2)}</td>
     </tr>`;
   }).join('');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER DIAGNOSTICS  (imp > 900, apenas pontos de atenção)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Diagnostics ────────────────────────────────────────────────────────
 function renderDiag() {
-  const data = getSignificant();
-  const issues = [];
-
-  // 1. eCPM abaixo do floor (crítico)
-  const below = data.filter(r => r.floor && r.ecpm < r.floor);
-  if (below.length) {
-    const list = below.map(r=>`<strong>${r.device}/${r.pos}</strong> — eCPM R$${r.ecpm.toFixed(2)} vs floor R$${r.floor.toFixed(2)} (regra: ${r.ruleName||'?'})`).join('<br>');
-    issues.push({ c:'#ef4444', bg:'#450a0a22', icon:'⛔', type:'Crítico',
-      title:`${below.length} posição(ões) com eCPM abaixo do floor`,
-      desc:`${list}<br>Floor bloqueando demanda. Reduzir piso ou criar regra específica.` });
-  }
-
-  // 2. Floor suprimindo demanda (eCPM ≈ floor, fill baixo)
-  const supr = data.filter(r => r.floor && r.vsFloor>=1 && r.vsFloor<1.35 && r.fill<25 && !below.includes(r));
-  if (supr.length) {
-    const list = supr.map(r=>`${r.device}/${r.pos} (${r.vsFloor.toFixed(2)}× · fill ${r.fill.toFixed(0)}%)`).join(', ');
-    issues.push({ c:'#f59e0b', bg:'#43140722', icon:'⚠️', type:'Atenção',
-      title:'Floor pode estar suprimindo demanda',
-      desc:`${list}. eCPM próximo ao floor com fill baixo. Considere testar o floor ~20% menor e monitorar RPM.` });
-  }
-
-  // 3. Gap match-fill expressivo
-  const gapped = data.filter(r => r.match - r.fill > 22 && r.fill < 20);
-  if (gapped.length) {
-    const list = gapped.map(r=>`${r.device}/${r.pos} (match ${r.match.toFixed(0)}% → fill ${r.fill.toFixed(0)}%)`).join(', ');
-    issues.push({ c:'#60a5fa', bg:'#0c1a2e22', icon:'ℹ️', type:'Observação',
-      title:'Gap relevante entre match rate e fill rate',
-      desc:`${list}. AdX recebe bids mas perde para Direct/HB. Verificar hierarquia de line items se não for intencional.` });
-  }
-
-  // 4. Posições sem regra ativa
-  const noRule = data.filter(r => !r.ruleId);
-  if (noRule.length) {
-    const list = noRule.map(r=>`${r.device}/${r.pos}`).join(', ');
-    issues.push({ c:'#f97316', bg:'#43140722', icon:'⚠️', type:'Atenção',
-      title:'Posições sem regra de floor ativa',
-      desc:`${list}. Inventário sendo vendido sem preço mínimo. Configure e ative uma regra no painel acima.` });
-  }
-
-  const el = document.getElementById('diag-body');
-  if (!issues.length) {
-    el.innerHTML = `<div class="diag-empty">✅ Nenhum ponto crítico identificado com as regras ativas e volume mínimo de 900 impressões.</div>`;
-    return;
-  }
-  el.innerHTML = issues.map(i=>`<div class="alert" style="background:${i.bg};border-color:${i.c}">
-    <div class="alert-head"><span>${i.icon}</span>
-      <span class="alert-type" style="color:${i.c}">${i.type}</span>
-      <span class="alert-title">${i.title}</span>
-    </div>
-    <div class="alert-desc">${i.desc}</div>
-  </div>`).join('');
+  const data=getSignificant(), issues=[];
+  const below=data.filter(r=>r.floor&&r.ecpm<r.floor);
+  if (below.length) issues.push({ c:'#ef4444', bg:'#450a0a22', icon:'⛔', type:'Crítico',
+    title:`${below.length} posição(ões) com eCPM abaixo do floor`,
+    desc:below.map(r=>`<strong>${r.device}/${r.pos}</strong> — eCPM R$${r.ecpm.toFixed(2)} vs floor R$${r.floor.toFixed(2)} (${r.ruleName||'?'})`).join('<br>') + '<br>Floor bloqueando demanda. Reduzir piso ou criar regra específica.' });
+  const supr=data.filter(r=>r.floor&&r.vsFloor>=1&&r.vsFloor<1.35&&r.fill<25&&!below.includes(r));
+  if (supr.length) issues.push({ c:'#f59e0b', bg:'#43140722', icon:'⚠️', type:'Atenção',
+    title:'Floor pode estar suprimindo demanda',
+    desc:supr.map(r=>`${r.device}/${r.pos} (${r.vsFloor.toFixed(2)}× · fill ${r.fill.toFixed(0)}%)`).join(', ') + '. eCPM próximo ao floor com fill baixo. Testar floor ~20% menor.' });
+  const gapped=data.filter(r=>r.match-r.fill>22&&r.fill<20);
+  if (gapped.length) issues.push({ c:'#60a5fa', bg:'#0c1a2e22', icon:'ℹ️', type:'Observação',
+    title:'Gap relevante entre match rate e fill rate',
+    desc:gapped.map(r=>`${r.device}/${r.pos} (match ${r.match.toFixed(0)}% → fill ${r.fill.toFixed(0)}%)`).join(', ') + '. AdX recebe bids mas perde para Direct/HB. Verificar hierarquia de line items.' });
+  const noRule=data.filter(r=>!r.ruleId);
+  if (noRule.length) issues.push({ c:'#f97316', bg:'#43140722', icon:'⚠️', type:'Atenção',
+    title:'Posições sem regra de floor ativa',
+    desc:noRule.map(r=>`${r.device}/${r.pos}`).join(', ') + '. Inventário sem preço mínimo. Configure e ative uma regra acima.' });
+  const el=document.getElementById('diag-body');
+  el.innerHTML = issues.length
+    ? issues.map(i=>`<div class="alert" style="background:${i.bg};border-color:${i.c}"><div class="alert-head"><span>${i.icon}</span><span class="alert-type" style="color:${i.c}">${i.type}</span><span class="alert-title">${i.title}</span></div><div class="alert-desc">${i.desc}</div></div>`).join('')
+    : `<div class="diag-empty">✅ Nenhum ponto crítico com as regras ativas e imp &gt; 900.</div>`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER OPPORTUNITIES  (AV > 70% + eCPM elevado + floor sub-aproveitado)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Opportunities ──────────────────────────────────────────────────────
 function renderOpportunities() {
-  const el = document.getElementById('opp-body');
-  const opps = getSignificant().filter(r => r.av > 70 && r.floor && r.vsFloor >= 1.5);
-  if (!opps.length) {
-    el.innerHTML = `<div class="opp-empty">Nenhuma oportunidade identificada com os critérios atuais (AV &gt; 70%, eCPM ≥ 1,5× o floor, imp &gt; 900).</div>`;
-    return;
-  }
-  const avS = av => ({ c: av>=70?'#22c55e':av>=50?'#f59e0b':av>=30?'#f97316':'#ef4444' });
-  el.innerHTML = `<div class="opp-grid">${opps.sort((a,b)=>b.vsFloor-a.vsFloor).map(r => {
-    const ac = avS(r.av);
-    const suggFloor = (r.floor * Math.min(r.vsFloor * 0.6, 2.2)).toFixed(2);
-    const msg = r.vsFloor > 2.5
-      ? `eCPM significativamente acima do floor atual (${r.vsFloor.toFixed(1)}×). Existe espaço para elevar o floor sem comprometer a demanda.`
-      : `Existe espaço para elevar o floor sem comprometer a demanda. eCPM ${r.vsFloor.toFixed(1)}× acima do piso atual.`;
+  const el=document.getElementById('opp-body');
+  const opps=getSignificant().filter(r=>r.av>70&&r.floor&&r.vsFloor>=1.5);
+  if (!opps.length) { el.innerHTML=`<div style="padding:14px;font-size:12px;color:var(--t5)">Nenhuma oportunidade (AV &gt; 70% · vs floor ≥ 1,5× · imp &gt; 900).</div>`; return; }
+  el.innerHTML=`<div class="opp-grid">${opps.sort((a,b)=>b.vsFloor-a.vsFloor).map(r=>{
+    const ac=r.av>=70?'#22c55e':r.av>=50?'#f59e0b':'#f97316';
+    const sug=(r.floor*Math.min(r.vsFloor*0.6,2.2)).toFixed(2);
+    const msg=r.vsFloor>2.5?'eCPM significativamente acima do floor atual. Existe espaço para elevar o floor sem comprometer a demanda.':`Existe espaço para elevar o floor sem comprometer a demanda. eCPM ${r.vsFloor.toFixed(1)}× acima do piso atual.`;
     return `<div class="opp-card">
-      <div class="opp-card-head">
-        <span style="text-transform:capitalize">${r.device} / ${r.pos}</span>
-        <span style="font-size:11px;color:var(--green);font-weight:700">+R$${(suggFloor - r.floor).toFixed(2)} potencial</span>
-      </div>
-      <div class="opp-rule">${r.ruleName || 'Sem regra'}</div>
+      <div class="opp-card-head"><span style="text-transform:capitalize">${r.device} / ${r.pos}</span><span style="font-size:11px;color:var(--green);font-weight:700">+R$${(parseFloat(sug)-r.floor).toFixed(2)} potencial</span></div>
+      <div class="opp-rule">${r.ruleName||'Sem regra'}</div>
       <div class="opp-metrics">
-        <div class="opp-metric"><span class="opp-metric-label">Active View</span><span class="opp-metric-val" style="color:${ac.c}">${r.av.toFixed(1)}%</span></div>
-        <div class="opp-metric"><span class="opp-metric-label">eCPM</span><span class="opp-metric-val" style="color:var(--t2)">R$${r.ecpm.toFixed(2)}</span></div>
+        <div class="opp-metric"><span class="opp-metric-label">Active View</span><span class="opp-metric-val" style="color:${ac}">${r.av.toFixed(1)}%</span></div>
+        <div class="opp-metric"><span class="opp-metric-label">eCPM</span><span class="opp-metric-val">R$${r.ecpm.toFixed(2)}</span></div>
         <div class="opp-metric"><span class="opp-metric-label">Floor atual</span><span class="opp-metric-val" style="color:#fbbf24">R$${r.floor.toFixed(2)}</span></div>
         <div class="opp-metric"><span class="opp-metric-label">Vs Floor</span><span class="opp-metric-val" style="color:var(--green)">${r.vsFloor.toFixed(1)}×</span></div>
       </div>
@@ -785,188 +668,312 @@ function renderOpportunities() {
   }).join('')}</div>`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDER SUGGESTIONS  (agrupado por regra · seção 9 + 10 do spec)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Suggestions (com Sugerido em destaque) ─────────────────────────────
 function renderSuggestions() {
-  const sig = getSignificant().filter(r => r.ruleId);
-  const groups = {};
-  sig.forEach(r => {
-    if (!groups[r.ruleId]) groups[r.ruleId] = {
-      ruleId:r.ruleId, ruleName:r.ruleName, floor:r.floor,
-      imp:0, req:0, rev:0, ecpmW:0, matchW:0, fillW:0, avW:0, positions:[]
-    };
-    const g = groups[r.ruleId];
-    g.imp += r.imp; g.req += r.req; g.rev += r.rev;
-    g.ecpmW  += r.ecpm  * r.imp;
-    g.matchW += r.match * r.req;
-    g.fillW  += r.fill  * r.req;
-    g.avW    += r.av    * r.imp;
+  const sig=getSignificant().filter(r=>r.ruleId);
+  const groups={};
+  sig.forEach(r=>{
+    if (!groups[r.ruleId]) groups[r.ruleId]={ ruleId:r.ruleId, ruleName:r.ruleName, floor:r.floor, imp:0,req:0,rev:0,ecpmW:0,matchW:0,fillW:0,avW:0,positions:[] };
+    const g=groups[r.ruleId];
+    g.imp+=r.imp; g.req+=r.req; g.rev+=r.rev;
+    g.ecpmW+=r.ecpm*r.imp; g.matchW+=r.match*r.req; g.fillW+=r.fill*r.req; g.avW+=r.av*r.imp;
     g.positions.push(`${r.device}/${r.pos}`);
   });
-
-  const rows = Object.values(groups).map(g => {
-    const ecpm   = g.imp>0 ? g.ecpmW/g.imp : 0;
-    const ratio  = g.floor>0 ? ecpm/g.floor : null;
-    let action, pri, priColor, sug;
-
-    if (ratio === null) {
-      action = 'Sem floor configurado'; pri = 'N/A'; priColor='#64748b';
-      sug = g.floor;
-    } else if (ecpm < g.floor) {
-      action = 'Reduzir floor — bloqueio de demanda ativo';
-      pri = 'Alta'; priColor = '#ef4444';
-      sug = (ecpm * 0.85).toFixed(2);
-    } else if (ratio < 1.35) {
-      action = 'Testar redução leve do floor para ganhar volume';
-      pri = 'Baixa'; priColor = '#22c55e';
-      sug = (g.floor * 0.82).toFixed(2);
-    } else if (ratio <= 2.5) {
-      action = 'Existe espaço para elevar o floor sem comprometer a demanda';
-      pri = 'Média'; priColor = '#f59e0b';
-      sug = (g.floor * 1.35).toFixed(2);
-    } else {
-      action = 'eCPM significativamente acima do floor atual. Aumento mais agressivo recomendado';
-      pri = 'Alta'; priColor = '#ef4444';
-      sug = (g.floor * 1.65).toFixed(2);
-    }
-
-    const ratioHtml = ratio!=null
-      ? `<span style="color:${ecpm<g.floor?'#ef4444':ratio<1.4?'#f59e0b':'#22c55e'};font-weight:700">${ecpm<g.floor?'⚠ ABAIXO':ratio.toFixed(1)+'×'}</span>`
-      : '—';
-
+  const rows=Object.values(groups).map(g=>{
+    const ecpm=g.imp>0?g.ecpmW/g.imp:0;
+    const sug=calcSuggestedFloor(ecpm,g.floor);
+    const {action,pri,pc}=calcAction(ecpm,g.floor);
+    const ratio=g.floor>0?ecpm/g.floor:null;
+    const ratioHtml=ratio!=null?`<span style="color:${ecpm<g.floor?'#ef4444':ratio<1.4?'#f59e0b':'#22c55e'};font-weight:700">${ecpm<g.floor?'⚠ ABAIXO':ratio.toFixed(1)+'×'}</span>`:'—';
+    const sugHtml = sug!=null
+      ? `<span class="sugg-pill"><span class="sugg-arrow">→</span> R$${sug.toFixed(2)}</span>`
+      : `<span style="color:var(--t6)">—</span>`;
     return `<tr>
       <td style="color:var(--t2);font-weight:500">${g.ruleName}</td>
       <td class="pos-list">${g.positions.join('<br>')}</td>
-      <td style="color:#fbbf24;font-weight:700">R$${g.floor?.toFixed(2)||'—'}</td>
-      <td style="font-weight:600;color:var(--t2)">R$${ecpm.toFixed(2)}</td>
+      <td style="color:#fbbf24;font-weight:700">${g.floor!=null?'R$'+g.floor.toFixed(2):'—'}</td>
+      <td style="font-weight:600">R$${ecpm.toFixed(2)}</td>
       <td>${ratioHtml}</td>
-      <td style="color:var(--t3);font-size:11px">${action}<br><span style="color:var(--t5)">→ Sugerido: R$${sug}</span></td>
-      <td><span class="pri-badge" style="background:${priColor}1a;color:${priColor}">${pri}</span></td>
+      <td style="color:var(--t3);font-size:11px">${action}</td>
+      <td>${sugHtml}</td>
+      <td><span class="pri-badge" style="background:${pc}1a;color:${pc}">${pri}</span></td>
     </tr>`;
   });
-
   document.getElementById('sugg-body').innerHTML = rows.length
     ? rows.join('')
-    : `<tr><td colspan="7" style="padding:14px;color:var(--t5);font-size:12px">Nenhuma sugestão para as posições com imp &gt; 900 e regras ativas.</td></tr>`;
+    : `<tr><td colspan="8" style="padding:14px;color:var(--t5);font-size:12px">Nenhuma sugestão para posições com imp &gt; 900 e regras ativas.</td></tr>`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MASTER RENDER + RECOMPUTE
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Render Governance ─────────────────────────────────────────────────────────
+function renderGovernance() {
+  const el=document.getElementById('gov-body');
+  const sigData=getFiltered().filter(r=>r.imp>0);
+  // Build usage map
+  const usage={};
+  rules.filter(r=>r.active&&r.floor>0).forEach(r=>{ usage[r.id]={rule:r,rows:[],imp:0,rev:0}; });
+  sigData.forEach(r=>{ if(r.ruleId&&usage[r.ruleId]){ usage[r.ruleId].rows.push(r); usage[r.ruleId].imp+=r.imp; usage[r.ruleId].rev+=r.rev; } });
+
+  const unusedRules=Object.values(usage).filter(u=>u.imp===0);
+  const unmatched=sigData.filter(r=>!r.ruleId&&r.imp>900);
+  const ruleHealth=Object.values(usage).filter(u=>u.imp>0).map(u=>{
+    const ecpmAvg=u.imp>0?(u.rev/u.imp*1000):0;
+    const ratio=ecpmAvg/u.rule.floor;
+    let status,color,sugg;
+    if (ecpmAvg<u.rule.floor)   { status='🔴 Bloqueando demanda'; color='#ef4444'; sugg=`eCPM médio R$${ecpmAvg.toFixed(2)} abaixo do floor R$${u.rule.floor.toFixed(2)}. Reduzir o floor imediatamente.`; }
+    else if (ratio<1.35)        { status='🟡 Risco de supressão'; color='#f59e0b'; sugg=`eCPM ${ratio.toFixed(1)}× o floor. Monitorar fill rate. Considere testar floor menor.`; }
+    else if (ratio>2.5)         { status='💡 Floor sub-aproveitado'; color='#60a5fa'; sugg=`eCPM ${ratio.toFixed(1)}× o floor. Existe espaço para elevar sem comprometer a demanda.`; }
+    else                        { status='✅ Saudável'; color='#22c55e'; sugg=''; }
+    return {...u,ecpmAvg,ratio,status,color,sugg};
+  });
+
+  let html='';
+
+  // Rule health table
+  if (ruleHealth.length) {
+    html+=`<div style="margin-bottom:18px">
+      <div class="gov-sub-title" style="color:var(--t5)">Status das Regras com Dados</div>
+      <div class="tbl-scroll"><table class="gov-tbl">
+        <thead><tr><th>Regra</th><th>Impressões</th><th>eCPM Médio</th><th>Status</th><th>Observação / Ação</th></tr></thead>
+        <tbody>${ruleHealth.map(u=>`<tr>
+          <td style="color:var(--t2)">${u.rule.name}</td>
+          <td style="color:var(--t3)">${u.imp.toLocaleString('pt-BR')}</td>
+          <td style="font-weight:600">R$${u.ecpmAvg.toFixed(2)}</td>
+          <td style="color:${u.color};font-weight:500">${u.status}</td>
+          <td style="color:var(--t4);font-size:11px">${u.sugg||'—'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>`;
+  }
+
+  // Unused rules
+  if (unusedRules.length) {
+    html+=`<div style="margin-bottom:18px">
+      <div class="gov-sub-title" style="color:var(--yellow)">⚠️ Regras Ativas sem Dados Correspondentes</div>
+      ${unusedRules.map(u=>`<div style="background:var(--bg);border:1px solid var(--s2);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-size:12px;color:var(--t2);font-weight:500">${u.rule.name}</div>
+          <div style="font-size:11px;color:var(--t5);margin-top:2px">Match pattern: "<code>${u.rule.pos}</code>" — nenhuma posição importada corresponde a este padrão.</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="cancel-btn" onclick="startEdit(${u.rule.id})" style="font-size:11px">✎ Editar</button>
+          <button class="cancel-btn" onclick="toggleRule(${u.rule.id})" style="font-size:11px;color:var(--yellow)">○ Desativar</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Unmatched high-volume positions → suggest new rules
+  if (unmatched.length) {
+    html+=`<div style="margin-bottom:6px">
+      <div class="gov-sub-title" style="color:var(--cyan)">💡 Posições com Volume sem Regra — Novas Regras Sugeridas</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+        ${unmatched.map(r=>{
+          const sugFloor=+(r.ecpm*0.45).toFixed(2);
+          const dev=r.device==='Desktop'?'desktop':'msite';
+          const sugName=`IDI | Novo | ${r.device} | ${r.pos.charAt(0).toUpperCase()+r.pos.slice(1)}`;
+          return `<div class="new-rule-card">
+            <div class="new-rule-head">${r.device} / <span style="text-transform:capitalize">${r.pos}</span></div>
+            <div class="new-rule-metrics">
+              <div class="nrm"><span>Impressões</span>${r.imp.toLocaleString('pt-BR')}</div>
+              <div class="nrm"><span>eCPM</span>R$${r.ecpm.toFixed(2)}</div>
+              <div class="nrm"><span>Active View</span>${r.av.toFixed(1)}%</div>
+              <div class="nrm"><span>RPM</span>R$${r.rpm.toFixed(2)}</div>
+            </div>
+            <div class="new-rule-action">Floor sugerido: R$${sugFloor.toFixed(2)} (~45% do eCPM)</div>
+            <button class="save-btn" style="margin-top:8px;font-size:11px;width:100%;border-radius:6px;padding:6px"
+              onclick="quickAddRule('${sugName.replace(/'/g,"\\'")}','${dev}','${r.pos}',${sugFloor})">
+              + Criar regra automaticamente
+            </button>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (!html) html=`<div style="padding:14px;font-size:12px;color:var(--green)">✅ Todas as regras ativas têm dados correspondentes e nenhuma posição relevante está sem cobertura.</div>`;
+  el.innerHTML=html;
+}
+
+// ── History ───────────────────────────────────────────────────────────────────
+function getLastFloor(pos, device) {
+  for (let i=historyRows.length-1; i>=0; i--) {
+    const r=historyRows[i];
+    if (r.pos===pos&&r.device===device) return r.floorNovo;
+  }
+  return null;
+}
+function doSnapshot() {
+  if (!allData.length) { alert('Nenhum dado carregado.'); return; }
+  const today=new Date().toLocaleDateString('pt-BR');
+  const newRows=getFiltered().filter(r=>r.imp>0).map(r=>({
+    date: today,
+    pos:  r.pos,
+    device: r.device,
+    ruleName: r.ruleName||'—',
+    floorAntigo: parseFloat((getLastFloor(r.pos,r.device)??r.floor??0).toFixed(2)),
+    floorNovo:   parseFloat((calcSuggestedFloor(r.ecpm,r.floor)??r.floor??0).toFixed(2)),
+    match: parseFloat(r.match.toFixed(2)),
+    cpm:   parseFloat(r.ecpm.toFixed(2))
+  }));
+  historyRows=[...historyRows,...newRows];
+  saveHistory();
+  downloadHistoryXLSX();
+  renderHistorySection();
+}
+function downloadHistoryXLSX() {
+  if (!historyRows.length) { alert('Nenhum histórico registrado.'); return; }
+  const ws=XLSX.utils.aoa_to_sheet([
+    ['Data','Posição','Dispositivo','Regra','Floor Antigo','Floor Novo','Match %','CPM'],
+    ...historyRows.map(r=>[r.date,r.pos,r.device,r.ruleName,r.floorAntigo,r.floorNovo,r.match,r.cpm])
+  ]);
+  ws['!cols']=[{wch:12},{wch:14},{wch:12},{wch:36},{wch:13},{wch:13},{wch:10},{wch:10}];
+  // Bold header
+  ['A1','B1','C1','D1','E1','F1','G1','H1'].forEach(ref=>{
+    if (!ws[ref]) return;
+    ws[ref].s={ font:{bold:true}, fill:{fgColor:{rgb:'1E293B'}} };
+  });
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Histórico de Floors');
+  XLSX.writeFile(wb,`IDi_historico_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+function importHistory(file) {
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const json=XLSX.utils.sheet_to_json(ws,{defval:''});
+      const imported=json.map(r=>({
+        date:   String(r['Data']||r.date||''),
+        pos:    String(r['Posição']||r.pos||'').toLowerCase(),
+        device: String(r['Dispositivo']||r.device||''),
+        ruleName: String(r['Regra']||r.ruleName||'—'),
+        floorAntigo: parseFloat(r['Floor Antigo']??r.floorAntigo??0),
+        floorNovo:   parseFloat(r['Floor Novo']??r.floorNovo??0),
+        match: parseFloat(r['Match %']??r.match??0),
+        cpm:   parseFloat(r['CPM']??r.cpm??0)
+      })).filter(r=>r.pos&&r.date);
+      const localOnly=historyRows.filter(lr=>!imported.find(ir=>ir.date===lr.date&&ir.pos===lr.pos&&ir.device===lr.device));
+      historyRows=[...imported,...localOnly].sort((a,b)=>{
+        const da=a.date.split('/').reverse().join(''), db=b.date.split('/').reverse().join('');
+        return da.localeCompare(db)||a.pos.localeCompare(b.pos);
+      });
+      saveHistory(); renderHistorySection();
+      alert(`✅ ${imported.length} registros importados. Total: ${historyRows.length} registros.`);
+    } catch(err) { alert('Erro ao importar: '+err.message); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function renderHistorySection() {
+  const count=historyRows.length;
+  document.getElementById('hist-count').textContent=count?`— ${count} registros`:'';
+  const el=document.getElementById('hist-body');
+  if (!count) {
+    el.innerHTML=`<div style="padding:14px;font-size:12px;color:var(--t5)">
+      Nenhum histórico registrado. Clique em <strong>Gerar Histórico</strong> para criar o primeiro snapshot.<br>
+      <span style="color:var(--t6);font-size:11px">O histórico será salvo no navegador (localStorage) e baixado como XLSX.</span>
+    </div>`; return;
+  }
+  const recent=[...historyRows].reverse().slice(0,20);
+  const noteHtml=`<div class="hist-note">
+    ℹ️ <div>Histórico salvo no navegador (localStorage). Exporte regularmente para backup — o XLSX gerado <strong>acumula todos os snapshots</strong>. Para restaurar em outro dispositivo ou navegador, use <em>Importar histórico</em>.
+    ${count>20?`<br><span style="color:var(--cyan)">Mostrando últimos 20 de ${count} registros.</span>`:''}</div>
+  </div>`;
+  const rows=recent.map(r=>{
+    const changed=r.floorNovo!==r.floorAntigo;
+    const dir=r.floorNovo>r.floorAntigo?'up':r.floorNovo<r.floorAntigo?'down':'same';
+    const arrow=dir==='up'?'↑':dir==='down'?'↓':'';
+    return `<tr>
+      <td style="color:var(--t4)">${r.date}</td>
+      <td style="text-transform:capitalize;color:var(--t2)">${r.pos}</td>
+      <td style="color:var(--t4);font-size:11px">${r.device}</td>
+      <td style="color:var(--t5);font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-tip="${r.ruleName}">${r.ruleName}</td>
+      <td style="color:#fbbf24">R$${r.floorAntigo.toFixed(2)}</td>
+      <td class="floor-${dir}">R$${r.floorNovo.toFixed(2)} ${arrow}</td>
+      <td style="color:var(--t3)">${r.match.toFixed(1)}%</td>
+      <td style="color:var(--t3)">R$${r.cpm.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+  el.innerHTML=noteHtml+`<div class="tbl-scroll"><table class="hist-tbl">
+    <thead><tr><th>Data</th><th>Posição</th><th>Device</th><th>Regra</th><th>Floor Antigo</th><th>Floor Novo</th><th>Match</th><th>CPM</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+// ── Master render ─────────────────────────────────────────────────────────────
 function render() {
-  renderKPIs();
-  renderTable();
-  renderDiag();
-  renderOpportunities();
-  renderSuggestions();
+  renderKPIs(); renderTable(); renderDiag(); renderOpportunities();
+  renderSuggestions(); renderGovernance(); renderHistorySection();
 }
-function recompute() {
-  allData = withFloors(allData);
-  renderRules();
-  render();
-}
+function recompute() { allData=withFloors(allData); renderRules(); render(); }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA PROCESSING  (from CSV / XLSX)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Data processing ───────────────────────────────────────────────────────────
 function processRows(rawRows) {
-  const groups = {};
-  rawRows.forEach(row => {
-    const device  = (row['Device category']||'').trim();
+  const groups={};
+  rawRows.forEach(row=>{
+    const device=(row['Device category']||'').trim();
     if (!['Smartphone','Tablet','Desktop'].includes(device)) return;
-    const kv      = (row['Key-values']||row['Key values']||'').trim();
-    const m       = kv.match(/idi_pos=(\w[\w -]*)/i);
-    if (!m) return;
-    const pos     = m[1].trim().toLowerCase();
-    const adUnit  = (row['Ad unit']||row['Ad Unit']||'').trim();
-    const key     = `${device}|${pos}|${adUnit}`;
-    if (!groups[key]) groups[key] = { device, pos, adUnit, rev:0, imp:0, req:0, mW:0, avW:0 };
-    const g = groups[key];
-    g.rev += parseFloat(row['Ad Exchange revenue'])||0;
-    g.imp += parseInt(row['Ad Exchange impressions'])||0;
-    g.req += parseInt(row['Ad Exchange total requests'])||0;
-    g.mW  += (parseFloat(row['Ad Exchange match rate'])||0) * (parseInt(row['Ad Exchange total requests'])||0);
-    g.avW += Math.min(parseFloat(row['Total Active View % viewable impressions'])||0, 1)
-           * (parseInt(row['Ad Exchange impressions'])||0);
+    const kv=(row['Key-values']||row['Key values']||'').trim();
+    const m=kv.match(/idi_pos=(\w[\w -]*)/i); if (!m) return;
+    const pos=m[1].trim().toLowerCase(), adUnit=(row['Ad unit']||row['Ad Unit']||'').trim();
+    const key=`${device}|${pos}|${adUnit}`;
+    if (!groups[key]) groups[key]={device,pos,adUnit,rev:0,imp:0,req:0,mW:0,avW:0};
+    const g=groups[key];
+    g.rev+=parseFloat(row['Ad Exchange revenue'])||0;
+    g.imp+=parseInt(row['Ad Exchange impressions'])||0;
+    g.req+=parseInt(row['Ad Exchange total requests'])||0;
+    g.mW+=(parseFloat(row['Ad Exchange match rate'])||0)*(parseInt(row['Ad Exchange total requests'])||0);
+    g.avW+=Math.min(parseFloat(row['Total Active View % viewable impressions'])||0,1)*(parseInt(row['Ad Exchange impressions'])||0);
   });
-  return Object.values(groups).filter(g => g.req > 0).map(g => {
-    const match = g.req>0 ? (g.mW/g.req)*100 : 0;
-    const fill  = g.req>0 ? (g.imp/g.req)*100 : 0;
-    const ecpm  = g.imp>0 ? (g.rev/g.imp)*1000 : 0;
-    const av    = g.imp>0 ? (g.avW/g.imp)*100 : 0;
-    const rpm   = g.req>0 ? (g.rev/g.req)*1000 : 0;
-    return { device:g.device, pos:g.pos, adUnit:g.adUnit, imp:g.imp, req:g.req, rev:g.rev,
-             match, fill, ecpm, av, rpm, floor:null, ruleId:null, ruleName:null, vsFloor:null };
+  return Object.values(groups).filter(g=>g.req>0).map(g=>{
+    const match=g.req>0?(g.mW/g.req)*100:0, fill=g.req>0?(g.imp/g.req)*100:0;
+    const ecpm=g.imp>0?(g.rev/g.imp)*1000:0, av=g.imp>0?(g.avW/g.imp)*100:0, rpm=g.req>0?(g.rev/g.req)*1000:0;
+    return {device:g.device,pos:g.pos,adUnit:g.adUnit,imp:g.imp,req:g.req,rev:g.rev,match,fill,ecpm,av,rpm,floor:null,ruleId:null,ruleName:null,vsFloor:null};
   });
 }
-
-function applyFile(rawRows, filename) {
-  allData = withFloors(processRows(rawRows));
-  document.getElementById('file-badge').textContent = '✓ ' + filename;
+function applyFile(rawRows,filename) {
+  allData=withFloors(processRows(rawRows));
+  document.getElementById('file-badge').textContent='✓ '+filename;
   document.getElementById('drop-zone').classList.add('hidden');
   render();
 }
 function handleFile(file) {
   if (!file) return;
-  const ext = file.name.split('.').pop().toLowerCase();
-  const reader = new FileReader();
-  if (ext === 'csv') {
-    reader.onload = e => applyFile(Papa.parse(e.target.result, {header:true,skipEmptyLines:true}).data, file.name);
-    reader.readAsText(file, 'UTF-8');
-  } else if (['xlsx','xls'].includes(ext)) {
-    reader.onload = e => {
-      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-      applyFile(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''}), file.name);
-    };
-    reader.readAsArrayBuffer(file);
-  } else { alert('Use .csv ou .xlsx'); }
+  const ext=file.name.split('.').pop().toLowerCase(), reader=new FileReader();
+  if (ext==='csv') { reader.onload=e=>applyFile(Papa.parse(e.target.result,{header:true,skipEmptyLines:true}).data,file.name); reader.readAsText(file,'UTF-8'); }
+  else if (['xlsx','xls'].includes(ext)) { reader.onload=e=>{ const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'}); applyFile(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''}),file.name); }; reader.readAsArrayBuffer(file); }
+  else alert('Use .csv ou .xlsx');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TOOLTIP
-// ─────────────────────────────────────────────────────────────────────────────
-const tip = document.getElementById('gl-tip');
-document.addEventListener('mouseover', e => {
-  const el = e.target.closest('[data-tip]'); if (!el) return;
-  tip.textContent = el.dataset.tip;
-  tip.style.opacity = '0'; tip.style.display = 'block';
-  requestAnimationFrame(() => {
-    const r = el.getBoundingClientRect();
-    let l = r.left + window.scrollX + r.width/2 - tip.offsetWidth/2;
-    let t = r.top  + window.scrollY - tip.offsetHeight - 8;
-    l = Math.max(8, Math.min(l, window.innerWidth - tip.offsetWidth - 8));
-    if (t < window.scrollY) t = r.bottom + window.scrollY + 8;
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+const tip=document.getElementById('gl-tip');
+document.addEventListener('mouseover',e=>{
+  const el=e.target.closest('[data-tip]'); if (!el) return;
+  tip.textContent=el.dataset.tip; tip.style.opacity='0'; tip.style.display='block';
+  requestAnimationFrame(()=>{
+    const r=el.getBoundingClientRect();
+    let l=r.left+window.scrollX+r.width/2-tip.offsetWidth/2, t=r.top+window.scrollY-tip.offsetHeight-8;
+    l=Math.max(8,Math.min(l,window.innerWidth-tip.offsetWidth-8));
+    if (t<window.scrollY) t=r.bottom+window.scrollY+8;
     tip.style.left=l+'px'; tip.style.top=t+'px'; tip.style.opacity='1';
   });
 });
-document.addEventListener('mouseout', e => { if (e.target.closest('[data-tip]')) tip.style.opacity='0'; });
+document.addEventListener('mouseout',e=>{ if (e.target.closest('[data-tip]')) tip.style.opacity='0'; });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// EVENT LISTENERS
-// ─────────────────────────────────────────────────────────────────────────────
-document.getElementById('file-input').addEventListener('change', e => handleFile(e.target.files[0]));
-const dz = document.getElementById('drop-zone');
-dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-dz.addEventListener('drop',      e => { e.preventDefault(); dz.classList.remove('over'); handleFile(e.dataTransfer.files[0]); });
+// ── Events ────────────────────────────────────────────────────────────────────
+document.getElementById('file-input').addEventListener('change',e=>handleFile(e.target.files[0]));
+document.getElementById('hist-file').addEventListener('change',e=>importHistory(e.target.files[0]));
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');handleFile(e.dataTransfer.files[0]);});
+document.getElementById('rules-toggle').addEventListener('click',()=>{ const b=document.getElementById('rules-body'),btn=document.getElementById('rules-toggle'); btn.textContent=b.classList.toggle('hidden')?'Expandir':'Recolher'; });
+document.getElementById('legend-toggle').addEventListener('click',()=>{ const b=document.getElementById('legend-body'),btn=document.getElementById('legend-toggle'); btn.textContent=b.classList.toggle('hidden')?'Expandir':'Recolher'; });
+document.getElementById('gov-toggle').addEventListener('click',()=>{ const b=document.getElementById('gov-body'),btn=document.getElementById('gov-toggle'); btn.textContent=b.classList.toggle('hidden')?'Expandir':'Recolher'; });
 
-document.getElementById('rules-toggle').addEventListener('click', () => {
-  const b = document.getElementById('rules-body'), btn = document.getElementById('rules-toggle');
-  btn.textContent = b.classList.toggle('hidden') ? 'Expandir' : 'Recolher';
-});
-document.getElementById('legend-toggle').addEventListener('click', () => {
-  const b = document.getElementById('legend-body'), btn = document.getElementById('legend-toggle');
-  btn.textContent = b.classList.toggle('hidden') ? 'Expandir' : 'Recolher';
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────────────────────────────────────
-allData = withFloors(RAW_DEFAULT);
-renderRules();
-renderDeviceFilters();
-render();
+// ── Init ──────────────────────────────────────────────────────────────────────
+allData=withFloors(RAW_DEFAULT);
+renderRules(); renderDeviceFilters(); render();
 </script>
 </body>
 </html>
