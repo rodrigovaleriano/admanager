@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GAM Order Assistant — Minha Conexão</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#060f18;color:#e2e8f0;font-family:system-ui,-apple-system,sans-serif}
+    input,textarea,select{font-family:inherit}
+    input:focus,textarea:focus,select:focus{outline:none;border-color:#2563eb!important}
+    select option{background:#0f1e2e;color:#e2e8f0}
+    textarea{resize:vertical}
+    a{cursor:pointer}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#060f18}
+    ::-webkit-scrollbar-thumb{background:#1e3a52;border-radius:3px}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+/* ── Tokens ───────────────────────────────────────────────────── */
+const S = {
+  card    : {background:"#0d1f30",border:"1px solid #1a3550",borderRadius:12,overflow:"hidden",marginBottom:20},
+  head    : {background:"#0a1929",borderBottom:"1px solid #1a3550",padding:"12px 16px",display:"flex",alignItems:"center",gap:10},
+  body    : {padding:16,display:"flex",flexDirection:"column",gap:14},
+  inp     : {width:"100%",background:"#0f1e2e",border:"1px solid #1e3a52",borderRadius:6,padding:"8px 12px",fontSize:13,color:"#e2e8f0",fontFamily:"inherit",boxSizing:"border-box"},
+  mono    : {background:"#07131f",border:"1px solid #1a3348",borderRadius:6,padding:"8px 12px",fontSize:12,fontFamily:"monospace",color:"#34d399",wordBreak:"break-all",whiteSpace:"pre-wrap"},
+  label   : {display:"block",fontSize:11,color:"#64748b",marginBottom:5,letterSpacing:"0.03em"},
+};
+
+/* ── Packages ─────────────────────────────────────────────────── */
+const PACKAGES = {
+  POPULAR     : {label:"PACOTE PROVEDOR POPULAR",     rate:19.40, lineItems:[{name:"Geo",imp:4250,priority:"Normal"},{name:"Location",imp:750,priority:"Low"},{name:"Provider",imp:500,priority:"Normal"}]},
+  MEDIO       : {label:"PACOTE PROVEDOR MÉDIO",       rate:20.00, lineItems:[{name:"Geo",imp:8500,priority:"Normal"},{name:"Location",imp:1500,priority:"Low"},{name:"Provider",imp:800,priority:"Normal"}]},
+  GRANDE      : {label:"PACOTE PROVEDOR GRANDE",      rate:20.00, lineItems:[{name:"Geo",imp:12750,priority:"Normal"},{name:"Location",imp:2250,priority:"Low"},{name:"Provider",imp:1000,priority:"Normal"}]},
+  EXTRA_GRANDE: {label:"PACOTE PROVEDOR EXTRA GRANDE",rate:20.00, lineItems:[{name:"Geo",imp:17000,priority:"Normal"},{name:"Location",imp:3000,priority:"Low"},{name:"Provider",imp:1000,priority:"Normal"}]},
+};
+
+const PKG_MAP = {
+  "popular":"POPULAR","pequeno":"POPULAR",
+  "médio":"MEDIO","medio":"MEDIO",
+  "grande":"GRANDE",
+  "extra grande":"EXTRA_GRANDE","extra_grande":"EXTRA_GRANDE","extragrande":"EXTRA_GRANDE",
+};
+
+const LI_COLORS = {
+  Geo     : {bg:"rgba(37,99,235,0.12)", border:"#1d4ed8", text:"#93c5fd"},
+  Location: {bg:"rgba(124,58,237,0.12)",border:"#7c3aed", text:"#c4b5fd"},
+  Provider: {bg:"rgba(5,150,105,0.12)", border:"#059669", text:"#6ee7b7"},
+};
+
+/* ── CSV parser ───────────────────────────────────────────────── */
+function parseCSV(text){
+  const rows=[];let row=[];let cell="";let inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'){if(inQ&&text[i+1]==='"'){cell+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){row.push(cell.trim());cell="";}
+    else if((c==='\n'||c==='\r')&&!inQ){
+      if(c==='\r'&&text[i+1]==='\n')i++;
+      row.push(cell.trim());if(row.some(Boolean))rows.push(row);row=[];cell="";
+    }else cell+=c;
+  }
+  if(cell||row.length){row.push(cell.trim());if(row.some(Boolean))rows.push(row);}
+  return{headers:rows[0]||[],rows:rows.slice(1)};
+}
+
+function findCol(headers,...kws){
+  for(const kw of kws){const i=headers.findIndex(h=>h.toLowerCase().includes(kw.toLowerCase()));if(i>=0)return i;}
+  return -1;
+}
+
+function buildColMap(headers){
+  return{
+    provider : findCol(headers,"nome do provedor","provedor","provider"),
+    package  : findCol(headers,"pacote"),
+    status   : findCol(headers,"status","minha conex"),
+    banners  : findCol(headers,"banner","envio de banner"),
+    creative : findCol(headers,"clicar","redirecionado","link no campo","criativo"),
+    cities   : findCol(headers,"exibidos","cidade","anúncios serão","anuncios serao"),
+    emails   : findCol(headers,"e-mail","email","relatório","relatorio","compartilhados"),
+    timestamp: findCol(headers,"timestamp","data","hora"),
+  };
+}
+
+function parseCity(str){
+  const s=str.trim();
+  const m=s.match(/^(.+?)[\s\-\/]+([A-Z]{2})$/);
+  return m?{city:m[1].trim(),uf:m[2]}:{city:s,uf:null};
+}
+
+/* ── Sub-components ───────────────────────────────────────────── */
+function Num({n,color="#2563eb"}){
+  return <span style={{width:24,height:24,borderRadius:"50%",background:color,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:"#fff"}}>{n}</span>;
+}
+
+function CopyBtn({text,id,copied,onCopy,small}){
+  return(
+    <button onClick={()=>onCopy(text,id)} style={{padding:small?"3px 8px":"6px 14px",borderRadius:5,border:"none",cursor:text?"pointer":"not-allowed",background:copied[id]?"#059669":"#1e3a52",color:copied[id]?"#fff":"#94a3b8",fontSize:11,fontWeight:500,whiteSpace:"nowrap",transition:"background 0.15s",opacity:text?1:0.35,flexShrink:0}}>
+      {copied[id]?"✓ Copiado":"Copiar"}
+    </button>
+  );
+}
+
+function Spinner(){
+  return <div style={{width:16,height:16,border:"2px solid #34d399",borderTopColor:"transparent",borderRadius:"50%",animation:"spin 0.8s linear infinite",flexShrink:0}}/>;
+}
+
+/* ── App ──────────────────────────────────────────────────────── */
+function App(){
+  /* form fields */
+  const [formUrl,        setFormUrl]        = useState("");
+  const [providerName,   setProviderName]   = useState("");
+  const [pkg,            setPkg]            = useState("POPULAR");
+  const [campaignStatus, setCampaignStatus] = useState("");
+  const [bannerUrls,     setBannerUrls]     = useState([""]);
+  const [creativeLink,   setCreativeLink]   = useState("");
+  const [creativeTested, setCreativeTested] = useState(false);
+  const [citiesInput,    setCitiesInput]    = useState("");
+  const [emailsInput,    setEmailsInput]    = useState("");
+  const [providerId,     setProviderId]     = useState("");
+  const [partnerId,      setPartnerId]      = useState("");
+  const [providerSysUrl, setProviderSysUrl] = useState("");
+  const [copied,         setCopied]         = useState({});
+  const [zipLoading,     setZipLoading]     = useState(false);
+
+  /* sheets */
+  const [sheetsUrl,     setSheetsUrl]     = useState("");
+  const [sheetsLoading, setSheetsLoading] = useState(false);
+  const [sheetsError,   setSheetsError]   = useState("");
+  const [loadedAt,      setLoadedAt]      = useState(null);
+  const [sheetRows,     setSheetRows]     = useState([]);
+  const [sheetHeaders,  setSheetHeaders]  = useState([]);
+  const [selectedRow,   setSelectedRow]   = useState(-1);
+  const [colMap,        setColMap]        = useState({});
+
+  /* derived */
+  const now      = new Date();
+  const mm       = String(now.getMonth()+1).padStart(2,"0");
+  const yyyy     = now.getFullYear();
+  const lastDay  = new Date(yyyy,now.getMonth()+1,0);
+  const endDate  = `${String(lastDay.getDate()).padStart(2,"0")}/${mm}/${yyyy}`;
+  const pkgCfg   = PACKAGES[pkg];
+  const orderName= `[${pkgCfg.label}] ${providerName||"..."} - ${mm}/${yyyy} - Minha Conexão`;
+
+  const citiesList     = citiesInput.split(/[,\n;]+/).map(c=>c.trim()).filter(Boolean).map(parseCity);
+  const geoNames       = citiesList.map(c=>c.city);
+  const locationNames  = citiesList.map(c=>c.uf?`${c.city} ${c.uf}`:c.city);
+  const geoTargeting   = geoNames.length?`geo=(${geoNames.map(c=>`"${c}"`).join(",")})`:""
+  const locTargeting   = locationNames.length?locationNames.map(c=>`"${c}"`).join(","):"";
+  const emails         = emailsInput.split(/[,\n;]+/).map(e=>e.trim()).filter(Boolean);
+
+  const copy=async(text,key)=>{
+    if(!text)return;
+    try{await navigator.clipboard.writeText(text);setCopied(p=>({...p,[key]:true}));setTimeout(()=>setCopied(p=>({...p,[key]:false})),2000);}catch{}
+  };
+
+  const getTgt=(name)=>{
+    if(name==="Geo")     return geoTargeting;
+    if(name==="Location")return locTargeting;
+    if(name==="Provider")return providerId?`"${providerId}"`:"";
+    return"";
+  };
+  const getTgtLabel=(name)=>{
+    if(name==="Geo")     return"geo =";
+    if(name==="Location")return"mc_provider (location) is any of";
+    return"mc_provider (mc_provider) is any of";
+  };
+
+  /* ── Sheets: fetch ── */
+  const extractId=(url)=>{const m=url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);return m?m[1]:null;};
+
+  const fetchSheet=async()=>{
+    const id=extractId(sheetsUrl);
+    if(!id){setSheetsError("URL inválida — use o link da planilha do Google Sheets.");return;}
+    setSheetsLoading(true);setSheetsError("");
+    try{
+      const res=await fetch(`https://docs.google.com/spreadsheets/d/${id}/export?format=csv`);
+      if(!res.ok)throw new Error(`Erro ${res.status} — verifique se a planilha está compartilhada como "Qualquer pessoa com o link".`);
+      const text=await res.text();
+      const{headers,rows}=parseCSV(text);
+      if(!rows.length)throw new Error("Nenhuma resposta encontrada na planilha.");
+      const cm=buildColMap(headers);
+      setSheetHeaders(headers);setSheetRows(rows);setColMap(cm);
+      const latest=rows.length-1;setSelectedRow(latest);
+      applyRow(rows,latest,cm);
+    }catch(e){setSheetsError(e.message);}
+    setSheetsLoading(false);
+  };
+
+  /* ── Sheets: apply row to fields ── */
+  const applyRow=(rows,idx,cm)=>{
+    const row=rows[idx];
+    const get=(k)=>cm[k]>=0?row[cm[k]]||"":"";
+
+    const rawProvider=get("provider");
+    const rawPackage =get("package");
+    const rawStatus  =get("status");
+    const rawBanners =get("banners");
+    const rawCreative=get("creative");
+    const rawCities  =get("cities");
+    const rawEmails  =get("emails");
+
+    if(rawProvider)setProviderName(rawProvider.trim());
+
+    const pkgKey=Object.entries(PKG_MAP).find(([k])=>rawPackage.toLowerCase().includes(k))?.[1];
+    if(pkgKey)setPkg(pkgKey);
+
+    if(rawStatus)setCampaignStatus(rawStatus.trim());
+    if(rawCreative)setCreativeLink(rawCreative.trim());
+
+    if(rawCities){
+      const list=rawCities.split(/[\n,]+/).map(c=>c.trim()).filter(Boolean);
+      setCitiesInput(list.join("\n"));
+    }
+    if(rawEmails){
+      const list=rawEmails.split(/[\n,;]+/).map(e=>e.trim()).filter(Boolean);
+      setEmailsInput(list.join("\n"));
+    }
+    if(rawBanners){
+      const urls=(rawBanners.match(/https?:\/\/[^\s,\n"]+/g)||[]);
+      if(urls.length)setBannerUrls(urls);
+    }
+
+    setLoadedAt(new Date().toLocaleTimeString("pt-BR"));
+    setCreativeTested(false);
+  };
+
+  /* ── ZIP ── */
+  const downloadZip=async()=>{
+    const valid=bannerUrls.filter(u=>u.trim());
+    if(!valid.length)return;
+    setZipLoading(true);
+    try{
+      const zip=new JSZip();
+      const today=now.toISOString().split("T")[0];
+      const folder=zip.folder(`${providerName||"banners"}_${today}`);
+      for(let i=0;i<valid.length;i++){
+        const url=valid[i];
+        try{const r=await fetch(url);const b=await r.blob();const ext=url.split("?")[0].split(".").pop().toLowerCase()||"jpg";folder.file(`banner_${String(i+1).padStart(2,"0")}.${ext}`,b);}
+        catch{folder.file(`banner_${String(i+1).padStart(2,"0")}.txt`,`URL: ${url}`);}
+      }
+      const blob=await zip.generateAsync({type:"blob"});
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`${providerName||"banners"}_${today}.zip`;a.click();
+    }catch(e){console.error(e);}
+    setZipLoading(false);
+  };
+
+  /* last 5 rows */
+  const last5=sheetRows.length?sheetRows.map((r,i)=>({r,i})).slice(-5).reverse():[];
+  const rowLabel=(r,cm)=>({
+    provider:cm.provider>=0?r[cm.provider]||"—":"—",
+    pkg     :cm.package>=0 ?r[cm.package]||"—" :"—",
+    ts      :cm.timestamp>=0?r[cm.timestamp]||"—":"—",
+  });
+
+  /* ── RENDER ── */
+  return(
+    <div style={{minHeight:"100vh",background:"#060f18",color:"#e2e8f0"}}>
+
+      {/* HEADER */}
+      <div style={{position:"sticky",top:0,zIndex:50,background:"#07121d",borderBottom:"1px solid #1a3550",padding:"10px 20px"}}>
+        <div style={{maxWidth:800,margin:"0 auto",display:"flex",alignItems:"center",gap:16}}>
+          <div style={{flexShrink:0}}>
+            <div style={{fontSize:9,color:"#475569",letterSpacing:"0.12em",textTransform:"uppercase"}}>Minha Conexão</div>
+            <div style={{fontSize:15,fontWeight:700,color:"#fff"}}>GAM Order Assistant</div>
+          </div>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:9,color:"#475569",marginBottom:3}}>NOME DA ORDER</div>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              <div style={{...S.mono,flex:1,fontSize:11,padding:"5px 10px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{orderName}</div>
+              <CopyBtn text={orderName} id="oh" copied={copied} onCopy={copy} small/>
+            </div>
+          </div>
+          <a href="https://admanager.google.com/21749501012#delivery/order/create" target="_blank" rel="noopener noreferrer"
+            style={{padding:"8px 16px",borderRadius:8,background:"#1d4ed8",color:"#fff",fontSize:12,fontWeight:700,textDecoration:"none",flexShrink:0}}>
+            Criar Order →
+          </a>
+        </div>
+      </div>
+
+      <div style={{maxWidth:800,margin:"0 auto",padding:"24px 16px 60px"}}>
+
+        {/* ── GOOGLE SHEETS ── */}
+        <div style={{...S.card,border:"1px solid #065f46",background:"#032117"}}>
+          <div style={{...S.head,background:"#042f1e",borderBottom:"1px solid #065f46"}}>
+            <span style={{fontSize:18}}>🔗</span>
+            <span style={{fontWeight:700,fontSize:14,color:"#34d399"}}>Conexão Google Sheets</span>
+            {loadedAt&&<span style={{marginLeft:"auto",fontSize:11,color:"#059669",background:"#064e3b",border:"1px solid #065f46",borderRadius:999,padding:"2px 10px"}}>✓ Carregado às {loadedAt}</span>}
+          </div>
+          <div style={S.body}>
+
+            {!sheetRows.length&&(
+              <div style={{background:"#07131f",border:"1px solid #1a3348",borderRadius:8,padding:"12px 14px"}}>
+                <div style={{fontSize:11,color:"#475569",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.05em"}}>Configuração (apenas uma vez)</div>
+                <div style={{display:"flex",flexDirection:"column",gap:8,fontSize:12,color:"#94a3b8"}}>
+                  {["No Google Forms → aba 'Respostas' → ícone verde do Sheets → 'Criar planilha'","Na planilha → Compartilhar → 'Qualquer pessoa com o link' → Leitor","Copie o link da planilha e cole abaixo"].map((s,i)=>(
+                    <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start"}}>
+                      <span style={{width:20,height:20,borderRadius:"50%",background:"#065f46",color:"#34d399",fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label style={S.label}>Link da planilha Google Sheets</label>
+              <div style={{display:"flex",gap:8}}>
+                <input style={{...S.inp,flex:1,border:"1px solid #065f46"}} type="url" value={sheetsUrl}
+                  onChange={e=>{setSheetsUrl(e.target.value);setSheetsError("");}}
+                  onKeyDown={e=>e.key==="Enter"&&fetchSheet()}
+                  placeholder="https://docs.google.com/spreadsheets/d/..."/>
+                <button onClick={fetchSheet} disabled={sheetsLoading||!sheetsUrl.trim()}
+                  style={{padding:"0 20px",background:sheetsLoading?"#065f46":"#059669",border:"none",borderRadius:6,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",opacity:!sheetsUrl.trim()?0.4:1,flexShrink:0,display:"flex",alignItems:"center",gap:8,minWidth:110}}>
+                  {sheetsLoading&&<Spinner/>}{sheetsLoading?"Buscando…":"Buscar"}
+                </button>
+              </div>
+            </div>
+
+            {sheetsError&&(
+              <div style={{background:"#450a0a",border:"1px solid #7f1d1d",borderRadius:8,padding:"10px 14px",fontSize:12,color:"#fca5a5"}}>⚠ {sheetsError}</div>
+            )}
+
+            {/* Last 5 selector */}
+            {last5.length>0&&(
+              <div>
+                <div style={{fontSize:11,color:"#64748b",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <span>{sheetRows.length} resposta(s) — últimas {last5.length}</span>
+                  <button onClick={fetchSheet} style={{background:"none",border:"none",color:"#059669",fontSize:12,cursor:"pointer",padding:0}}>↻ Atualizar</button>
+                </div>
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {last5.map(({r,i:absIdx},di)=>{
+                    const{provider,pkg:pkgLbl,ts}=rowLabel(r,colMap);
+                    const isSel=selectedRow===absIdx;
+                    const isLast=absIdx===sheetRows.length-1;
+                    return(
+                      <button key={absIdx} onClick={()=>{setSelectedRow(absIdx);applyRow(sheetRows,absIdx,colMap);}}
+                        style={{background:isSel?"rgba(5,150,105,0.15)":"rgba(15,30,46,0.8)",border:isSel?"1px solid #059669":"1px solid #1e3a52",borderRadius:10,padding:"10px 14px",cursor:"pointer",display:"flex",alignItems:"center",gap:12,textAlign:"left",transition:"all 0.15s",width:"100%"}}>
+                        <div style={{width:18,height:18,borderRadius:"50%",border:isSel?"none":"2px solid #334155",background:isSel?"#059669":"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,color:"#fff",fontWeight:700}}>
+                          {isSel?"✓":""}
+                        </div>
+                        <div style={{background:"#1e3a52",borderRadius:6,padding:"3px 8px",fontSize:10,color:"#64748b",fontFamily:"monospace",flexShrink:0}}>
+                          #{sheetRows.length-di}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
+                            <span style={{fontSize:13,fontWeight:600,color:isSel?"#34d399":"#cbd5e1",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{provider}</span>
+                            {isLast&&<span style={{background:"#065f46",color:"#34d399",fontSize:9,fontWeight:700,padding:"1px 7px",borderRadius:999,flexShrink:0,letterSpacing:"0.04em"}}>ÚLTIMA</span>}
+                          </div>
+                          <div style={{display:"flex",gap:12,fontSize:11,color:"#475569"}}>
+                            <span>📦 {pkgLbl}</span>
+                            <span>🕐 {String(ts).slice(0,16)}</span>
+                          </div>
+                        </div>
+                        <div style={{fontSize:11,color:isSel?"#059669":"#334155",fontWeight:600,flexShrink:0}}>
+                          {isSel?"✓ Selecionada":"Selecionar"}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── 1 FORMULÁRIO ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="1" color="#2563eb"/>
+            <span style={{fontWeight:600,fontSize:14}}>Dados do Formulário</span>
+            {loadedAt&&<span style={{marginLeft:"auto",fontSize:10,color:"#059669"}}>✓ preenchido automaticamente</span>}
+          </div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Link do Formulário</label>
+              <div style={{display:"flex",gap:8}}>
+                <input style={{...S.inp,flex:1}} type="url" value={formUrl} onChange={e=>setFormUrl(e.target.value)} placeholder="https://docs.google.com/forms/..."/>
+                {formUrl&&<a href={formUrl} target="_blank" rel="noopener noreferrer" style={{padding:"0 14px",background:"#1e3a52",borderRadius:6,display:"flex",alignItems:"center",fontSize:12,color:"#93c5fd",textDecoration:"none",whiteSpace:"nowrap"}}>Abrir ↗</a>}
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              <div><label style={S.label}>Nome do Provedor</label><input style={S.inp} type="text" value={providerName} onChange={e=>setProviderName(e.target.value)} placeholder="Ex: InterNet Telecom"/></div>
+              <div><label style={S.label}>Status da campanha</label><input style={S.inp} type="text" value={campaignStatus} onChange={e=>setCampaignStatus(e.target.value)} placeholder="Ex: Ativo"/></div>
+            </div>
+            <div>
+              <label style={S.label}>Pacote</label>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+                {Object.entries(PACKAGES).map(([k])=>(
+                  <button key={k} onClick={()=>setPkg(k)} style={{padding:"8px 4px",borderRadius:8,cursor:"pointer",border:pkg===k?"1px solid #2563eb":"1px solid #1e3a52",background:pkg===k?"#1d4ed8":"#0f1e2e",color:pkg===k?"#fff":"#64748b",fontSize:11,fontWeight:600,transition:"all 0.15s"}}>
+                    {k.replace("_"," ")}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 2 SISTEMA PROVEDORES ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="2" color="#7c3aed"/>
+            <span style={{fontWeight:600,fontSize:14}}>Sistema de Provedores</span>
+          </div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Link do sistema</label>
+              <div style={{display:"flex",gap:8}}>
+                <input style={{...S.inp,flex:1}} type="url" value={providerSysUrl} onChange={e=>setProviderSysUrl(e.target.value)} placeholder="https://..."/>
+                {providerSysUrl&&<a href={providerSysUrl} target="_blank" rel="noopener noreferrer" style={{padding:"0 14px",background:"#4c1d95",borderRadius:6,display:"flex",alignItems:"center",fontSize:12,color:"#c4b5fd",textDecoration:"none",whiteSpace:"nowrap"}}>Abrir ↗</a>}
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+              <div><label style={S.label}>ID Parceiro</label><input style={S.inp} type="text" value={partnerId} onChange={e=>setPartnerId(e.target.value)} placeholder="ID do parceiro"/></div>
+              <div><label style={S.label}>ID Provedor</label><input style={S.inp} type="text" value={providerId} onChange={e=>setProviderId(e.target.value)} placeholder="ID do provedor"/></div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 3 ORDER ── */}
+        <div style={S.card}>
+          <div style={S.head}><Num n="3" color="#0891b2"/><span style={{fontWeight:600,fontSize:14}}>Order Gerada</span></div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Nome da Order</label>
+              <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+                <div style={{...S.mono,flex:1}}>{orderName}</div>
+                <CopyBtn text={orderName} id="om" copied={copied} onCopy={copy}/>
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+              {[["Type","Standard"],["Rate",`R$ ${pkgCfg.rate.toFixed(2).replace(".",",")}`],["End Time",endDate]].map(([l,v])=>(
+                <div key={l} style={{background:"#07131f",border:"1px solid #1a3348",borderRadius:8,padding:"10px 12px"}}>
+                  <div style={{fontSize:10,color:"#475569",marginBottom:4}}>{l}</div>
+                  <div style={{fontSize:13,fontFamily:"monospace",color:"#34d399",fontWeight:600}}>{v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── 4 LINE ITEMS ── */}
+        <div style={S.card}>
+          <div style={S.head}><Num n="4" color="#0891b2"/><span style={{fontWeight:600,fontSize:14}}>Line Items — {pkgCfg.label}</span></div>
+          <div style={S.body}>
+            <div style={{background:"#07131f",border:"1px solid #1a3348",borderRadius:8,padding:"12px 14px"}}>
+              <div style={{fontSize:10,color:"#475569",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.06em"}}>Configurações comuns</div>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"6px 12px",fontSize:12}}>
+                {[["Type","Standard"],["Start","Immediately"],["End",endDate],["Rate",`R$ ${pkgCfg.rate.toFixed(2).replace(".",",")}`],["Priority padrão","Normal"],["Inventory","Placements = MinhaConexao"]].map(([k,v])=>(
+                  <div key={k}><span style={{color:"#475569"}}>{k}: </span><span style={{color:"#cbd5e1"}}>{v}</span></div>
+                ))}
+              </div>
+            </div>
+            {pkgCfg.lineItems.map(li=>{
+              const col=LI_COLORS[li.name];const tgt=getTgt(li.name);
+              const ph=li.name==="Provider"?"← preencha o ID Provedor (seção 2)":"← preencha as cidades (seção 5)";
+              return(
+                <div key={li.name} style={{background:col.bg,border:`1px solid ${col.border}`,borderRadius:10,overflow:"hidden"}}>
+                  <div style={{padding:"10px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:`1px solid ${col.border}`}}>
+                    <div style={{display:"flex",alignItems:"center",gap:10}}>
+                      <span style={{fontWeight:700,fontSize:15,color:"#fff"}}>{li.name}</span>
+                      <span style={{fontSize:10,padding:"2px 8px",borderRadius:999,fontWeight:600,background:li.priority==="Low"?"#7c2d12":"#1e3a52",color:li.priority==="Low"?"#fca5a5":"#94a3b8"}}>{li.priority}</span>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:8}}>
+                      <span style={{fontSize:10,color:"#64748b"}}>Impressões:</span>
+                      <span style={{fontFamily:"monospace",fontWeight:700,fontSize:16,color:col.text}}>{li.imp.toLocaleString("pt-BR")}</span>
+                      <CopyBtn text={String(li.imp)} id={`imp_${li.name}`} copied={copied} onCopy={copy} small/>
+                    </div>
+                  </div>
+                  <div style={{padding:"12px 14px",display:"flex",flexDirection:"column",gap:8}}>
+                    <div style={{fontSize:11,color:"#64748b"}}>Custom Targeting: <strong style={{color:"#94a3b8"}}>{getTgtLabel(li.name)}</strong></div>
+                    <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
+                      <div style={{...S.mono,flex:1,fontSize:12,color:tgt?"#34d399":"#1e3a52"}}>{tgt||ph}</div>
+                      {tgt&&<CopyBtn text={tgt} id={`tgt_${li.name}`} copied={copied} onCopy={copy}/>}
+                    </div>
+                    {li.name==="Location"&&<div style={{fontSize:11,color:"#fbbf24"}}>⚠ Esta line item usa <strong>Priority: Low</strong></div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── 5 CIDADES ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="5" color="#0d9488"/>
+            <span style={{fontWeight:600,fontSize:14}}>Cidades</span>
+            {loadedAt&&citiesInput&&<span style={{marginLeft:"auto",fontSize:10,color:"#059669"}}>✓ extraído do form</span>}
+          </div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Cidades (uma por linha, formato Cidade-UF)</label>
+              <textarea style={{...S.inp,height:88,display:"block"}} value={citiesInput} onChange={e=>setCitiesInput(e.target.value)} placeholder={"São Paulo-SP\nLondrina-PR\nMaringá-PR"}/>
+            </div>
+            {citiesList.length>0&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+                <div>
+                  <div style={{fontSize:11,color:"#64748b",marginBottom:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span>📍 Geo (sem UF)</span><CopyBtn text={geoTargeting} id="ga" copied={copied} onCopy={copy} small/>
+                  </div>
+                  <div style={{...S.mono,fontSize:11,marginBottom:8}}>{geoTargeting}</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                    {geoNames.map((c,i)=>(
+                      <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#07131f",borderRadius:6,padding:"5px 10px"}}>
+                        <span style={{fontFamily:"monospace",fontSize:12,color:"#cbd5e1"}}>{c}</span>
+                        <CopyBtn text={c} id={`g${i}`} copied={copied} onCopy={copy} small/>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div style={{fontSize:11,color:"#64748b",marginBottom:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span>🗺 Location (key-value)</span><CopyBtn text={locTargeting} id="la" copied={copied} onCopy={copy} small/>
+                  </div>
+                  <div style={{...S.mono,fontSize:11,marginBottom:8}}>{locTargeting}</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                    {locationNames.map((c,i)=>(
+                      <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#07131f",borderRadius:6,padding:"5px 10px"}}>
+                        <span style={{fontFamily:"monospace",fontSize:12,color:"#cbd5e1"}}>{c}</span>
+                        <CopyBtn text={c} id={`l${i}`} copied={copied} onCopy={copy} small/>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── 6 BANNERS ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="6" color="#b45309"/>
+            <span style={{fontWeight:600,fontSize:14}}>Banners</span>
+            {loadedAt&&bannerUrls.some(u=>u.trim())&&<span style={{marginLeft:"auto",fontSize:10,color:"#059669"}}>✓ URLs extraídas do form</span>}
+          </div>
+          <div style={S.body}>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {bannerUrls.map((url,i)=>(
+                <div key={i} style={{display:"flex",gap:8}}>
+                  <input style={{...S.inp,flex:1}} type="url" value={url} onChange={e=>setBannerUrls(p=>p.map((u,idx)=>idx===i?e.target.value:u))} placeholder={`URL do banner ${i+1}`}/>
+                  {url.trim()&&<a href={url} target="_blank" rel="noopener noreferrer" style={{padding:"0 10px",background:"#1e3a52",borderRadius:6,display:"flex",alignItems:"center",fontSize:14,textDecoration:"none"}}>👁</a>}
+                  {bannerUrls.length>1&&<button onClick={()=>setBannerUrls(p=>p.filter((_,idx)=>idx!==i))} style={{padding:"0 10px",background:"#450a0a",border:"none",borderRadius:6,color:"#f87171",cursor:"pointer",fontSize:13}}>✕</button>}
+                </div>
+              ))}
+            </div>
+            <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+              <button onClick={()=>setBannerUrls(p=>[...p,""])} style={{padding:"7px 14px",background:"#1e3a52",border:"none",borderRadius:6,color:"#94a3b8",fontSize:12,cursor:"pointer"}}>+ Adicionar URL</button>
+              <button onClick={downloadZip} disabled={zipLoading||!bannerUrls.some(u=>u.trim())} style={{padding:"7px 16px",border:"none",borderRadius:6,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",background:"#b45309",opacity:!bannerUrls.some(u=>u.trim())?0.4:1}}>
+                {zipLoading?"Criando ZIP…":`⬇ Baixar ZIP — ${providerName||"parceiro"}_${now.toISOString().split("T")[0]}`}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 7 LINK CRIATIVO ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="7" color="#0891b2"/>
+            <span style={{fontWeight:600,fontSize:14}}>Link dos Criativos</span>
+            {loadedAt&&creativeLink&&<span style={{marginLeft:"auto",fontSize:10,color:"#059669"}}>✓ extraído do form</span>}
+          </div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Link de redirecionamento do anúncio</label>
+              <div style={{display:"flex",gap:8}}>
+                <input style={{...S.inp,flex:1}} type="url" value={creativeLink} onChange={e=>{setCreativeLink(e.target.value);setCreativeTested(false);}} placeholder="https://..."/>
+                <a href={creativeLink||"#"} target="_blank" rel="noopener noreferrer" onClick={()=>{if(creativeLink)setCreativeTested(true);}}
+                  style={{padding:"0 16px",borderRadius:6,display:"flex",alignItems:"center",background:creativeLink?"#0e7490":"#1e3a52",color:creativeLink?"#fff":"#475569",fontSize:12,fontWeight:600,textDecoration:"none",pointerEvents:creativeLink?"auto":"none"}}>
+                  Testar ↗
+                </a>
+              </div>
+            </div>
+            {creativeTested&&<div style={{display:"flex",alignItems:"center",gap:8,background:"#064e3b",border:"1px solid #065f46",borderRadius:8,padding:"10px 14px",fontSize:12,color:"#34d399"}}>✓ Link aberto — confirme se carregou corretamente no navegador</div>}
+            {creativeLink&&<CopyBtn text={creativeLink} id="cc" copied={copied} onCopy={copy}/>}
+          </div>
+        </div>
+
+        {/* ── 8 EMAILS ── */}
+        <div style={S.card}>
+          <div style={S.head}>
+            <Num n="8" color="#6d28d9"/>
+            <span style={{fontWeight:600,fontSize:14}}>Emails para Relatórios</span>
+            {loadedAt&&emailsInput&&<span style={{marginLeft:"auto",fontSize:10,color:"#059669"}}>✓ extraído do form</span>}
+          </div>
+          <div style={S.body}>
+            <div>
+              <label style={S.label}>Emails (um por linha ou vírgula)</label>
+              <textarea style={{...S.inp,height:80,display:"block"}} value={emailsInput} onChange={e=>setEmailsInput(e.target.value)} placeholder={"contato@empresa.com.br\nfinanceiro@empresa.com.br"}/>
+            </div>
+            {emails.length>0&&(
+              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                {emails.map((em,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"center",gap:6,background:"#1e1b4b",border:"1px solid #312e81",borderRadius:999,padding:"4px 12px"}}>
+                    <span style={{fontSize:12,color:"#a5b4fc"}}>{em}</span>
+                    <button onClick={()=>copy(em,`em${i}`)} style={{background:"none",border:"none",cursor:"pointer",fontSize:10,color:copied[`em${i}`]?"#34d399":"#6366f1"}}>{copied[`em${i}`]?"✓":"Copiar"}</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{background:"linear-gradient(135deg,#1e3a8a,#1d4ed8)",border:"1px solid #2563eb",borderRadius:16,padding:"20px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16}}>
+          <div>
+            <div style={{fontSize:15,fontWeight:700,color:"#fff",marginBottom:4}}>Tudo pronto para criar a Order</div>
+            <div style={{fontSize:12,color:"#93c5fd"}}>{pkgCfg.label} · {providerName||"..."} · fim em {endDate}</div>
+          </div>
+          <a href="https://admanager.google.com/21749501012#delivery/order/create" target="_blank" rel="noopener noreferrer"
+            style={{padding:"12px 24px",borderRadius:10,background:"#fff",color:"#1d4ed8",fontSize:13,fontWeight:700,textDecoration:"none",flexShrink:0}}>
+            Criar Order no GAM →
+          </a>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
