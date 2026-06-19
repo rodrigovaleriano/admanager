@@ -177,18 +177,48 @@ function App(){
     return"mc_provider (mc_provider) is any of";
   };
 
-  /* ── Sheets: fetch ── */
+  /* ── Sheets: fetch via JSONP (sem CORS, funciona em qualquer ambiente) ── */
   const extractId=(url)=>{const m=url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);return m?m[1]:null;};
+
+  const loadSheetJSONP=(sheetId)=>new Promise((resolve,reject)=>{
+    const cb=`_gviz_${Date.now()}`;
+    const script=document.createElement("script");
+    const cleanup=()=>{delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);};
+    window[cb]=(resp)=>{
+      cleanup();
+      try{
+        const table=resp.table;
+        // headers: use label, fallback to id
+        const headers=table.cols.map(c=>(c.label||c.id||"").trim());
+        // rows: convert cell objects → string values
+        const rows=table.rows.map(r=>{
+          if(!r.c)return[];
+          return r.c.map(cell=>{
+            if(!cell||cell.v===null||cell.v===undefined)return"";
+            // Dates come as "Date(2024,5,9,12,24,15)" — convert to readable
+            const v=String(cell.f||cell.v);
+            const dm=v.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)$/);
+            if(dm){
+              const[,yr,mo,dy,h=0,mi=0,s=0]=dm;
+              return`${String(dy).padStart(2,"0")}/${String(Number(mo)+1).padStart(2,"0")}/${yr} ${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`;
+            }
+            return v;
+          });
+        });
+        resolve({headers,rows});
+      }catch(e){reject(e);}
+    };
+    script.onerror=()=>{cleanup();reject(new Error("Não foi possível acessar a planilha. Verifique se está compartilhada como 'Qualquer pessoa com o link'."));};
+    script.src=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&callback=${cb}`;
+    document.head.appendChild(script);
+  });
 
   const fetchSheet=async()=>{
     const id=extractId(sheetsUrl);
     if(!id){setSheetsError("URL inválida — use o link da planilha do Google Sheets.");return;}
     setSheetsLoading(true);setSheetsError("");
     try{
-      const res=await fetch(`https://docs.google.com/spreadsheets/d/${id}/export?format=csv`);
-      if(!res.ok)throw new Error(`Erro ${res.status} — verifique se a planilha está compartilhada como "Qualquer pessoa com o link".`);
-      const text=await res.text();
-      const{headers,rows}=parseCSV(text);
+      const{headers,rows}=await loadSheetJSONP(id);
       if(!rows.length)throw new Error("Nenhuma resposta encontrada na planilha.");
       const cm=buildColMap(headers);
       setSheetHeaders(headers);setSheetRows(rows);setColMap(cm);
