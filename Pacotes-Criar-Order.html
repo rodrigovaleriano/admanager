@@ -177,54 +177,68 @@ function App(){
     return"mc_provider (mc_provider) is any of";
   };
 
-  /* ── Sheets: fetch via JSONP (sem CORS, funciona em qualquer ambiente) ── */
+  /* ── Sheets: fetch dual-method ── */
   const extractId=(url)=>{const m=url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);return m?m[1]:null;};
 
-  const loadSheetJSONP=(sheetId)=>new Promise((resolve,reject)=>{
-    const cb=`_gviz_${Date.now()}`;
+  const parseCells=(resp)=>{
+    const table=resp.table;
+    const headers=table.cols.map(c=>(c.label||c.id||"").trim());
+    const rows=table.rows.map(r=>{
+      if(!r.c)return[];
+      return r.c.map(cell=>{
+        if(!cell||cell.v===null||cell.v===undefined)return"";
+        const v=String(cell.f||cell.v);
+        const dm=v.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+))?\)$/);
+        if(dm){const[,yr,mo,dy,h=0,mi=0]=dm;return`${String(dy).padStart(2,"0")}/${String(Number(mo)+1).padStart(2,"0")}/${yr} ${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`;}
+        return v;
+      });
+    });
+    return{headers,rows};
+  };
+
+  const tryFetchCSV=async(url)=>{
+    const res=await fetch(url,{mode:"cors",cache:"no-store"});
+    if(!res.ok)throw new Error("HTTP_"+res.status);
+    const text=await res.text();
+    if(text.trim().startsWith("<!"))throw new Error("LOGIN_REQUIRED");
+    return parseCSV(text);
+  };
+
+  const tryJSONP=(sheetId)=>new Promise((resolve,reject)=>{
+    const cb="_gviz_"+Date.now();let done=false;
+    const cleanup=()=>{done=true;delete window[cb];const s=document.getElementById(cb);if(s)s.remove();};
+    const timer=setTimeout(()=>{if(!done){cleanup();reject(new Error("TIMEOUT"));}},9000);
+    window[cb]=(resp)=>{clearTimeout(timer);cleanup();try{resolve(parseCells(resp));}catch(e){reject(e);}};
     const script=document.createElement("script");
-    const cleanup=()=>{delete window[cb];if(script.parentNode)script.parentNode.removeChild(script);};
-    window[cb]=(resp)=>{
-      cleanup();
-      try{
-        const table=resp.table;
-        // headers: use label, fallback to id
-        const headers=table.cols.map(c=>(c.label||c.id||"").trim());
-        // rows: convert cell objects → string values
-        const rows=table.rows.map(r=>{
-          if(!r.c)return[];
-          return r.c.map(cell=>{
-            if(!cell||cell.v===null||cell.v===undefined)return"";
-            // Dates come as "Date(2024,5,9,12,24,15)" — convert to readable
-            const v=String(cell.f||cell.v);
-            const dm=v.match(/^Date\((\d+),(\d+),(\d+)(?:,(\d+),(\d+),(\d+))?\)$/);
-            if(dm){
-              const[,yr,mo,dy,h=0,mi=0,s=0]=dm;
-              return`${String(dy).padStart(2,"0")}/${String(Number(mo)+1).padStart(2,"0")}/${yr} ${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`;
-            }
-            return v;
-          });
-        });
-        resolve({headers,rows});
-      }catch(e){reject(e);}
-    };
-    script.onerror=()=>{cleanup();reject(new Error("Não foi possível acessar a planilha. Verifique se está compartilhada como 'Qualquer pessoa com o link'."));};
-    script.src=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&callback=${cb}`;
+    script.id=cb;
+    script.onerror=()=>{clearTimeout(timer);cleanup();reject(new Error("SCRIPT_ERROR"));};
+    script.src="https://docs.google.com/spreadsheets/d/"+sheetId+"/gviz/tq?tqx=out:json&callback="+cb;
     document.head.appendChild(script);
   });
 
+  const isPubUrl=(url)=>url.includes("/pub")&&url.includes("output=csv");
+
   const fetchSheet=async()=>{
-    const id=extractId(sheetsUrl);
-    if(!id){setSheetsError("URL inválida — use o link da planilha do Google Sheets.");return;}
     setSheetsLoading(true);setSheetsError("");
     try{
-      const{headers,rows}=await loadSheetJSONP(id);
-      if(!rows.length)throw new Error("Nenhuma resposta encontrada na planilha.");
-      const cm=buildColMap(headers);
-      setSheetHeaders(headers);setSheetRows(rows);setColMap(cm);
-      const latest=rows.length-1;setSelectedRow(latest);
-      applyRow(rows,latest,cm);
-    }catch(e){setSheetsError(e.message);}
+      let data;
+      if(isPubUrl(sheetsUrl)){
+        data=await tryFetchCSV(sheetsUrl);
+      }else{
+        const id=extractId(sheetsUrl);
+        if(!id){setSheetsError("URL inválida — use o link da planilha do Google Sheets.");setSheetsLoading(false);return;}
+        try{data=await tryJSONP(id);}
+        catch(e){
+          try{data=await tryFetchCSV("https://docs.google.com/spreadsheets/d/"+id+"/pub?output=csv");}
+          catch(e2){setSheetsError("NEEDS_PUBLISH");setSheetsLoading(false);return;}
+        }
+      }
+      if(!data.rows.length)throw new Error("Nenhuma resposta encontrada na planilha.");
+      const cm=buildColMap(data.headers);
+      setSheetHeaders(data.headers);setSheetRows(data.rows);setColMap(cm);
+      const latest=data.rows.length-1;setSelectedRow(latest);
+      applyRow(data.rows,latest,cm);
+    }catch(e){setSheetsError(e.message==="NEEDS_PUBLISH"?"NEEDS_PUBLISH":e.message);}
     setSheetsLoading(false);
   };
 
@@ -358,8 +372,27 @@ function App(){
               </div>
             </div>
 
-            {sheetsError&&(
+            {sheetsError&&sheetsError!=="NEEDS_PUBLISH"&&(
               <div style={{background:"#450a0a",border:"1px solid #7f1d1d",borderRadius:8,padding:"10px 14px",fontSize:12,color:"#fca5a5"}}>⚠ {sheetsError}</div>
+            )}
+            {sheetsError==="NEEDS_PUBLISH"&&(
+              <div style={{background:"#1c1400",border:"1px solid #92400e",borderRadius:10,padding:"14px 16px"}}>
+                <div style={{fontSize:13,fontWeight:700,color:"#fbbf24",marginBottom:10}}>⚠ A planilha precisa ser publicada na web</div>
+                <div style={{fontSize:11,color:"#94a3b8",marginBottom:12}}>A planilha de respostas do Forms exige um passo extra. Faça isso uma vez só:</div>
+                <div style={{display:"flex",flexDirection:"column",gap:8,fontSize:12,color:"#cbd5e1"}}>
+                  {["Na planilha → menu Arquivo → Compartilhar → Publicar na web",
+                    "Selecione a aba com as respostas (ex: 'Respostas do formulário 1')",
+                    "Em formato selecione 'Valores separados por vírgula (.csv)'",
+                    "Clique em Publicar → confirme → copie o link gerado",
+                    "Cole esse novo link aqui no lugar do anterior"].map((s,i)=>(
+                    <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start"}}>
+                      <span style={{width:20,height:20,borderRadius:"50%",background:"#92400e",color:"#fbbf24",fontSize:11,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{i+1}</span>
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{marginTop:12,fontSize:11,color:"#64748b"}}>O link publicado termina com <span style={{fontFamily:"monospace",color:"#fbbf24"}}>&output=csv</span></div>
+              </div>
             )}
 
             {/* Last 5 selector */}
